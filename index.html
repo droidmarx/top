@@ -1,205 +1,261 @@
-<!DOCTYPE html>  
-<html lang="pt-BR">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Avalie a IndaiaFibra</title>  
-<style>  
-  * { box-sizing: border-box; }  
-  
-  body {  
-    font-family: 'Poppins', sans-serif;  
-    background: radial-gradient(circle at top, #0e1a2b, #000);  
-    color: #e0f7ff;  
-    margin: 0;  
-    padding: 0;  
-    overflow-x: hidden;  
-    height: 100vh;  
-    display: flex;  
-    align-items: center;  
-    justify-content: center;  
-    position: relative;  
-  }  
-  
-  .container {  
-    width: 90%;  
-    max-width: 400px;  
-    background: rgba(0, 30, 60, 0.75);  
-    border-radius: 20px;  
-    padding: 30px 20px;  
-    box-shadow: 0 0 30px rgba(0, 150, 255, 0.4);  
-    text-align: center;  
-    position: relative;  
-    z-index: 2;  
-    transition: opacity 0.3s ease;  
-  }  
-  
-  img.logo {  
-    width: 130px;  
-    margin-bottom: 20px;  
-    display: block;  
-    margin-left: auto;  
-    margin-right: auto;  
-    animation: flyIn 1.6s ease-out forwards, float 3.5s ease-in-out infinite 1.6s;  
-  }  
-  
-  @keyframes flyIn {  
-    0% { transform: translate(-200px, 200px); opacity: 0; }  
-    60% { transform: translate(20px,-10px); opacity:1; }  
-    100% { transform: translate(0,0); opacity:1; }  
-  }  
-  
-  @keyframes float {  
-    0%,100%{ transform: translateY(0); }  
-    50%{ transform: translateY(-8px); }  
-  }  
-  
-  h2 { color: #00bfff; margin-bottom: 10px; text-shadow: 0 0 10px #00bfff; font-size: 1.3rem; }  
-  p { font-size: 0.95rem; color: #b8e3ff; }  
-  textarea {  
-    width: 100%; height: 120px; margin-top: 15px; font-size: 14px;  
-    border-radius: 10px; padding: 10px; border: none; resize: none;  
-    background: rgba(255,255,255,0.1); color: #e0f7ff;  
-  }  
-  button {  
-    margin-top: 20px; background: linear-gradient(90deg,#00bfff,#0077ff);  
-    border: none; color: white; font-weight: bold; padding: 12px 25px;  
-    border-radius: 10px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;  
-    font-size: 16px; box-shadow: 0 0 15px rgba(0,150,255,0.4); position: relative;  
-    z-index: 3;  
-  }  
-  button:hover {  
-    background: linear-gradient(90deg,#00eaff,#00bfff);  
-    transform: scale(1.07); box-shadow:0 0 20px rgba(0,200,255,0.7);  
-  }  
-  
-  .footer { margin-top: 25px; font-size: 13px; color: #6ebaff; }  
-  
-  @media (max-width: 480px) {  
-    img.logo { width: 100px; }  
-    textarea { height: 100px; }  
-  }  
-  
-  /* Animação do foguete */  
-  @keyframes rocketLaunch {  
-    0% { transform: translateX(-50%) translateY(0) rotate(-45deg) scale(2); opacity: 1; }  
-    30% { transform: translateX(-70%) translateY(-50px) rotate(-45deg) scale(1.8); opacity:1; }  
-    100% { transform: translateX(-150%) translateY(-100vh) rotate(-45deg) scale(0.8); opacity: 0; }  
-  }  
-  
-  .launch {  
-    position: fixed;  
-    left: 50%;  
-    bottom: 20px;  
-    transform: translateX(-50%) rotate(-45deg);  
-    animation: rocketLaunch 1.5s ease-in-out forwards;  
-    font-size: 2rem;  
-    z-index: 100;  
-  }  
-  
-  /* Texto centralizado atrás do foguete */  
-  .redirect-text {  
-    position: fixed;  
-    top: 50%;  
-    left: 50%;  
-    transform: translate(-50%, -50%);  
-    color: #00bfff;  
-    font-size: 1.4rem;  
-    text-align: center;  
-    text-shadow: 0 0 15px #00bfff;  
-    opacity: 0;  
-    animation: fadeIn 1s forwards;  
-    z-index: 50;  
-  }  
-  
-  @keyframes fadeIn {  
-    from { opacity: 0; }  
-    to { opacity: 1; }  
-  }  
-  
-  /* Fade-out container */  
-  .fade-out { opacity: 0; }  
-  
-  /* Estrelas */  
-  .stars { margin-top: 15px; }  
-  .star {  
-    font-size: 2rem;  
-    cursor: pointer;  
-    color: #ccc;  
-    opacity: 0.1; /* mais visível inicialmente */  
-    transition: color 0.2s, opacity 0.2s;  
-  }  
-  .star.selected {  
-    color: #FFD700;  
-    opacity: 1;  
-  }  
-</style>  
-</head>  
-<body>  
-<div class="container" id="container">  
-  <img src="logo.png" alt="IndaiaFibra" class="logo">  
-  <h2>✨ Avalie nosso atendimento!</h2>  
-  <p>Obrigado por escolher a IndaiaFibra  😊</p>  
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avalie a IndaiaFibra</title>
+<style>
+  * { box-sizing: border-box; }
 
-  <!-- Estrelas de avaliação -->  
-<div class="stars" id="stars">  
-  <span class="star selected" data-value="1">⭐</span>  
-  <span class="star selected" data-value="2">⭐</span>  
-  <span class="star selected" data-value="3">⭐</span>  
-  <span class="star selected" data-value="4">⭐</span>  
-  <span class="star selected" data-value="5">⭐</span>  
-</div>  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #0e1a2b, #000);
+    color: #e0f7ff;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
 
-  <textarea id="mensagem" placeholder="Fui atendido pelo técnico da IndaiaFibra com profissionalismo e cordialidade. Recebi todas as orientações necessárias sobre meu plano contratado e sobre a configuração das tecnologias de internet e wi-fi, de forma clara e eficiente. Estou plenamente satisfeito com o serviço prestado e recomendo a IndaiaFibra pela qualidade e comprometimento no atendimento ao cliente." readonly></textarea>  
-  <button id="avaliarBtn">🚀 Avaliar agora</button>  
-  <p class="footer">Agradecemos sua confiança na IndaiaFibra 💙</p>  
-</div>  
-  
-<script>  
-const botao = document.getElementById('avaliarBtn');  
-const container = document.getElementById('container');  
-const stars = document.querySelectorAll('.star');  
-let selectedRating = 5;  
+  .container {
+    width: 90%;
+    max-width: 400px;
+    background: rgba(0, 30, 60, 0.75);
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.4);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
 
-// Sistema de seleção de estrelas com opacidade inicial
-stars.forEach(star => {  
-  star.addEventListener('click', () => {  
-    selectedRating = star.dataset.value;  
-    stars.forEach((s, i) => {  
-      if(i < selectedRating) {  
-        s.classList.add('selected');  
-      } else {  
-        s.classList.remove('selected');  
-      }  
-    });  
-  });  
-});  
+  img.logo {
+    width: 130px;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    animation: flyIn 1.6s ease-out forwards, float 3.5s ease-in-out infinite 1.6s;
+  }
 
-botao.addEventListener('click', () => {  
-  const texto = document.getElementById('mensagem').placeholder;  
-  const finalText = `${texto}\nAvaliação: ${selectedRating}⭐`;  
-  navigator.clipboard.writeText(finalText);  
-  
-  // Faz sumir todo o card  
-  container.classList.add('fade-out');  
-  
-  // Cria texto centralizado  
-  const redirectText = document.createElement('div');  
-  redirectText.classList.add('redirect-text');  
-  redirectText.innerText = 'Você está sendo redirecionado para avaliação no Google…';  
-  document.body.appendChild(redirectText);  
-  
-  // Cria o foguete  
-  const rocket = document.createElement('div');  
-  rocket.classList.add('launch');  
-  rocket.innerText = '🚀';  
-  document.body.appendChild(rocket);  
-  
-  // Redireciona após animação  
-  setTimeout(() => {  
-    window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';  
-  }, 1700);  
-});  
-</script>  
-</body>  
+  @keyframes flyIn {
+    0% { transform: translate(-200px, 200px); opacity: 0; }
+    60% { transform: translate(20px,-10px); opacity:1; }
+    100% { transform: translate(0,0); opacity:1; }
+  }
+
+  @keyframes float {
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+  }
+
+  h2 { color: #00bfff; margin-bottom: 10px; text-shadow: 0 0 10px #00bfff; font-size: 1.3rem; }
+  p { font-size: 0.95rem; color: #b8e3ff; }
+
+  textarea {
+    width: 100%; height: 120px; margin-top: 15px; font-size: 14px;
+    border-radius: 10px; padding: 10px; border: none; resize: none;
+    background: rgba(255,255,255,0.1); color: #e0f7ff;
+  }
+
+  button {
+    margin-top: 20px; background: linear-gradient(90deg,#00bfff,#0077ff);
+    border: none; color: white; font-weight: bold; padding: 12px 25px;
+    border-radius: 10px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: 16px; box-shadow: 0 0 15px rgba(0,150,255,0.4); position: relative;
+    z-index: 3;
+  }
+  button:hover {
+    background: linear-gradient(90deg,#00eaff,#00bfff);
+    transform: scale(1.07); box-shadow:0 0 20px rgba(0,200,255,0.7);
+  }
+
+  .footer { margin-top: 25px; font-size: 13px; color: #6ebaff; }
+
+  @media (max-width: 480px) {
+    img.logo { width: 100px; }
+    textarea { height: 100px; }
+  }
+
+  @keyframes rocketLaunch {
+    0% { transform: translateX(-50%) translateY(0) rotate(-45deg) scale(2); opacity: 1; }
+    30% { transform: translateX(-70%) translateY(-50px) rotate(-45deg) scale(4.8); opacity:1; }
+    100% { transform: translateX(-150%) translateY(-100vh) rotate(-45deg) scale(0.8); opacity: 0; }
+  }
+
+  .launch {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%) rotate(-45deg);
+    animation: rocketLaunch 1.5s ease-in-out forwards;
+    font-size: 2rem;
+    z-index: 100;
+  }
+
+  .redirect-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #00bfff;
+    font-size: 1.4rem;
+    text-align: center;
+    text-shadow: 0 0 15px #00bfff;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    z-index: 50;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .fade-out { opacity: 0; }
+
+  .stars { margin-top: 15px; }
+  .star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #ccc;
+    opacity: 0.1;
+    transition: color 0.2s, opacity 0.2s;
+  }
+  .star.selected {
+    color: #FFD700;
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+<div class="container" id="container">
+  <img src="logo.png" alt="IndaiaFibra" class="logo">
+  <h2>✨ Avalie nosso atendimento!</h2>
+  <p>Obrigado por escolher a IndaiaFibra  😊</p>
+
+  <div class="stars" id="stars">
+    <span class="star selected" data-value="1">⭐</span>
+    <span class="star selected" data-value="2">⭐</span>
+    <span class="star selected" data-value="3">⭐</span>
+    <span class="star selected" data-value="4">⭐</span>
+    <span class="star selected" data-value="5">⭐</span>
+  </div>
+
+  <textarea id="mensagem" readonly></textarea>
+  <button id="avaliarBtn">🚀 Avaliar agora</button>
+  <p class="footer">Agradecemos sua confiança na IndaiaFibra 💙</p>
+</div>
+
+<script>
+const botao = document.getElementById('avaliarBtn');
+const container = document.getElementById('container');
+const stars = document.querySelectorAll('.star');
+const textarea = document.getElementById('mensagem');
+let selectedRating = 5;
+
+// Array de 50 textos de avaliação positiva
+const textos = [
+  "O pós-atendimento é simplesmente nota 10! Após o serviço, a equipe demonstra um cuidado genuíno, entrando em contato para garantir que tudo está funcionando perfeitamente. São atenciosos, rápidos para esclarecer qualquer dúvida e super comprometidos em manter a satisfação do cliente. A experiência é fluida, sem complicações, e mostra um profissionalismo que realmente faz a diferença!",
+  "Que atendimento incrível! O serviço é rápido, descomplicado e super fácil de acessar. A equipe de suporte responde com agilidade, e a rapidez na hora de enviar um técnico é simplesmente fora da curva. Tudo feito com excelência, profissionalismo e sem nenhuma dor de cabeça, garantindo uma experiência impecável do começo ao fim!",
+  "Pense num atendimento de primeira, daqueles que realmente fazem a diferença! Técnicos sempre com um sorriso no rosto, super dispostos a resolver tudo com agilidade, educação e atenção. Sempre que precisei de suporte, fui atendido de forma impecável, com eficiência e precisão. Internet de alta qualidade e profissionais que sabem o que estão fazendo!",
+  "Serviço prestado com extrema competência! Técnicos pontuais, educados e muito organizados. Todo o processo é simples e eficiente, sem enrolações. Recomendo sem restrições!",
+  "Atendimento de altíssimo nível! Rápido, cordial e profissional. A equipe se preocupa com cada detalhe e garante que tudo funcione perfeitamente. Satisfação total!",
+  "Excelente suporte técnico! Sempre disponíveis, pacientes e resolutivos. Me senti seguro e bem atendido em todas as etapas. Nota 10!",
+  "Que equipe maravilhosa! Soluções rápidas, atendimento claro e atenção total às necessidades do cliente. Profissionalismo que se percebe em cada detalhe.",
+  "Técnicos altamente capacitados e super simpáticos. Atendimento ágil, eficiente e sem complicações. Experiência incrível do início ao fim!",
+  "Serviço impecável! Cada interação mostra cuidado e competência. Atendimento rápido e esclarecedor, com toda atenção necessária.",
+  "Não poderia estar mais satisfeito! Profissionalismo, cordialidade e eficiência definem a IndaiaFibra. Uma experiência realmente diferenciada e recomendável!",
+  "Atendimento excepcional! Técnicos rápidos e eficientes, sempre prontos para resolver qualquer problema com cordialidade e clareza.",
+  "Serviço rápido e descomplicado, com equipe altamente profissional. Todos os procedimentos são claros e executados com excelência.",
+  "Profissionais competentes e muito educados! Garantem que tudo funcione perfeitamente e demonstram cuidado real com o cliente.",
+  "Experiência de atendimento nota 10! Cada passo do serviço é transparente, ágil e conduzido com muito profissionalismo.",
+  "Equipe super dedicada! Atendimento cordial, eficiente e atento aos mínimos detalhes para garantir satisfação completa.",
+  "Satisfação garantida! Técnicos pontuais, prestativos e muito competentes. Serviço rápido e sem qualquer transtorno.",
+  "Atendimento impecável! Todos os processos são explicados claramente e executados com grande competência e cordialidade.",
+  "Profissionalismo que se percebe em cada etapa! Equipe atenciosa, ágil e dedicada a oferecer a melhor experiência possível.",
+  "Serviço de primeira! Técnicos extremamente educados, rápidos e atentos a todos os detalhes do atendimento.",
+  "Equipe maravilhosa! Sempre disponível, pronta para solucionar qualquer problema de forma eficiente e cordial.",
+  "Atendimento ágil, eficiente e de alta qualidade. Profissionais que realmente sabem o que estão fazendo!",
+  "Serviço rápido, sem complicações e com atenção total ao cliente. Recomendaria sem pensar duas vezes!",
+  "Profissionalismo e cordialidade definem a experiência com a IndaiaFibra. Atendimento sempre rápido e de alta qualidade.",
+  "Equipe extremamente competente! Cada atendimento é resolutivo e conduzido com atenção aos mínimos detalhes.",
+  "Atendimento de excelência! Técnicos prestativos, eficientes e muito educados. Experiência totalmente satisfatória.",
+  "Serviço ágil e sem burocracia. Profissionais dedicados e atentos garantem que tudo funcione perfeitamente.",
+  "Experiência incrível do início ao fim! Atendimento cordial, rápido e altamente profissional.",
+  "Profissionais altamente capacitados e muito atenciosos. Serviço rápido e eficiente, garantindo satisfação completa.",
+  "Atendimento super ágil! Equipe prestativa e extremamente competente. Recomendaria sem nenhuma dúvida.",
+  "Serviço impecável, com atenção aos detalhes e cuidado com cada cliente. Profissionalismo total.",
+  "Equipe dedicada e cordial! Cada atendimento é feito com rapidez, eficiência e total profissionalismo.",
+  "Atendimento rápido, eficiente e sem complicações. Profissionais que demonstram experiência e cuidado.",
+  "Serviço de altíssima qualidade! Técnicos educados, pontuais e extremamente competentes.",
+  "Experiência perfeita! Atendimento ágil, cordial e profissional em todas as etapas do serviço.",
+  "Equipe super eficiente! Cada interação mostra atenção, profissionalismo e dedicação total.",
+  "Serviço transparente, rápido e altamente satisfatório. Atendimento com cordialidade e competência.",
+  "Atendimento diferenciado! Profissionais prontos para ajudar e garantir que tudo funcione corretamente.",
+  "Satisfação total! Técnicos rápidos, prestativos e sempre dispostos a solucionar qualquer problema.",
+  "Serviço impecável, rápido e sem dor de cabeça. Equipe extremamente educada e eficiente.",
+  "Atendimento de qualidade superior! Cada passo do serviço é feito com atenção e dedicação.",
+  "Equipe super atenciosa! Atendimento eficiente, cordial e sempre preocupado com a satisfação do cliente.",
+  "Profissionalismo e rapidez em cada atendimento. Serviço impecável e totalmente confiável.",
+  "Serviço prestado com excelência! Técnicos competentes, rápidos e muito cordiais.",
+  "Experiência positiva do começo ao fim! Atendimento claro, eficiente e extremamente profissional.",
+  "Equipe altamente qualificada e muito simpática. Atendimento ágil, cordial e resolutivo.",
+  "Serviço eficiente, rápido e com atenção total ao cliente. Profissionalismo que se percebe em cada detalhe.",
+  "Atendimento impecável! Técnicos educados, prestativos e sempre dispostos a solucionar qualquer dúvida.",
+  "Experiência nota 10! Atendimento cordial, rápido e com profissionalismo em todos os detalhes.",
+  "Serviço excelente! Técnicos altamente competentes, atenciosos e eficientes. Satisfação garantida.",
+  "Atendimento de primeira classe! Profissionais rápidos, educados e totalmente focados no cliente.",
+  "Equipe maravilhosa! Cada atendimento é eficiente, cordial e conduzido com extremo profissionalismo.",
+  "Serviço rápido, eficaz e de alta qualidade. Atendimento sempre cordial e totalmente satisfatório.",
+  "Experiência única! Atendimento ágil, educado e profissional, garantindo total satisfação do cliente."
+];
+
+// Função para pegar texto aleatório
+function textoAleatorio() {
+  return textos[Math.floor(Math.random() * textos.length)];
+}
+
+// Mostra um texto aleatório no carregamento da página
+textarea.value = textoAleatorio();
+
+// Sistema de seleção de estrelas
+stars.forEach(star => {
+  star.addEventListener('click', () => {
+    selectedRating = star.dataset.value;
+    stars.forEach((s, i) => {
+      if(i < selectedRating) s.classList.add('selected');
+      else s.classList.remove('selected');
+    });
+  });
+});
+
+// Ao clicar no botão, copia avaliação e anima
+botao.addEventListener('click', () => {
+  const finalText = `${textarea.value}\nAvaliação: ${selectedRating}⭐`;
+  navigator.clipboard.writeText(finalText);
+
+  container.classList.add('fade-out');
+
+  const redirectText = document.createElement('div');
+  redirectText.classList.add('redirect-text');
+  redirectText.innerText = 'Você está sendo redirecionado para avaliação no Google…';
+  document.body.appendChild(redirectText);
+
+  const rocket = document.createElement('div');
+  rocket.classList.add('launch');
+  rocket.innerText = '🚀';
+  document.body.appendChild(rocket);
+
+  setTimeout(() => {
+    window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';
+  }, 1700);
+});
+</script>
+</body>
 </html>
