@@ -1,0 +1,205 @@
+<!DOCTYPE html>  
+<html lang="pt-BR">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Avalie a IndaiaFibra</title>  
+<style>  
+  * { box-sizing: border-box; }  
+  
+  body {  
+    font-family: 'Poppins', sans-serif;  
+    background: radial-gradient(circle at top, #0e1a2b, #000);  
+    color: #e0f7ff;  
+    margin: 0;  
+    padding: 0;  
+    overflow-x: hidden;  
+    height: 100vh;  
+    display: flex;  
+    align-items: center;  
+    justify-content: center;  
+    position: relative;  
+  }  
+  
+  .container {  
+    width: 90%;  
+    max-width: 400px;  
+    background: rgba(0, 30, 60, 0.75);  
+    border-radius: 20px;  
+    padding: 30px 20px;  
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.4);  
+    text-align: center;  
+    position: relative;  
+    z-index: 2;  
+    transition: opacity 0.3s ease;  
+  }  
+  
+  img.logo {  
+    width: 130px;  
+    margin-bottom: 20px;  
+    display: block;  
+    margin-left: auto;  
+    margin-right: auto;  
+    animation: flyIn 1.6s ease-out forwards, float 3.5s ease-in-out infinite 1.6s;  
+  }  
+  
+  @keyframes flyIn {  
+    0% { transform: translate(-200px, 200px); opacity: 0; }  
+    60% { transform: translate(20px,-10px); opacity:1; }  
+    100% { transform: translate(0,0); opacity:1; }  
+  }  
+  
+  @keyframes float {  
+    0%,100%{ transform: translateY(0); }  
+    50%{ transform: translateY(-8px); }  
+  }  
+  
+  h2 { color: #00bfff; margin-bottom: 10px; text-shadow: 0 0 10px #00bfff; font-size: 1.3rem; }  
+  p { font-size: 0.95rem; color: #b8e3ff; }  
+  textarea {  
+    width: 100%; height: 120px; margin-top: 15px; font-size: 14px;  
+    border-radius: 10px; padding: 10px; border: none; resize: none;  
+    background: rgba(255,255,255,0.1); color: #e0f7ff;  
+  }  
+  button {  
+    margin-top: 20px; background: linear-gradient(90deg,#00bfff,#0077ff);  
+    border: none; color: white; font-weight: bold; padding: 12px 25px;  
+    border-radius: 10px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;  
+    font-size: 16px; box-shadow: 0 0 15px rgba(0,150,255,0.4); position: relative;  
+    z-index: 3;  
+  }  
+  button:hover {  
+    background: linear-gradient(90deg,#00eaff,#00bfff);  
+    transform: scale(1.07); box-shadow:0 0 20px rgba(0,200,255,0.7);  
+  }  
+  
+  .footer { margin-top: 25px; font-size: 13px; color: #6ebaff; }  
+  
+  @media (max-width: 480px) {  
+    img.logo { width: 100px; }  
+    textarea { height: 100px; }  
+  }  
+  
+  /* Animação do foguete */  
+  @keyframes rocketLaunch {  
+    0% { transform: translateX(-50%) translateY(0) rotate(-45deg) scale(2); opacity: 1; }  
+    30% { transform: translateX(-70%) translateY(-50px) rotate(-45deg) scale(1.8); opacity:1; }  
+    100% { transform: translateX(-150%) translateY(-100vh) rotate(-45deg) scale(0.8); opacity: 0; }  
+  }  
+  
+  .launch {  
+    position: fixed;  
+    left: 50%;  
+    bottom: 20px;  
+    transform: translateX(-50%) rotate(-45deg);  
+    animation: rocketLaunch 1.5s ease-in-out forwards;  
+    font-size: 2rem;  
+    z-index: 100;  
+  }  
+  
+  /* Texto centralizado atrás do foguete */  
+  .redirect-text {  
+    position: fixed;  
+    top: 50%;  
+    left: 50%;  
+    transform: translate(-50%, -50%);  
+    color: #00bfff;  
+    font-size: 1.4rem;  
+    text-align: center;  
+    text-shadow: 0 0 15px #00bfff;  
+    opacity: 0;  
+    animation: fadeIn 1s forwards;  
+    z-index: 50;  
+  }  
+  
+  @keyframes fadeIn {  
+    from { opacity: 0; }  
+    to { opacity: 1; }  
+  }  
+  
+  /* Fade-out container */  
+  .fade-out { opacity: 0; }  
+  
+  /* Estrelas */  
+  .stars { margin-top: 15px; }  
+  .star {  
+    font-size: 2rem;  
+    cursor: pointer;  
+    color: #ccc;  
+    opacity: 0.1; /* mais visível inicialmente */  
+    transition: color 0.2s, opacity 0.2s;  
+  }  
+  .star.selected {  
+    color: #FFD700;  
+    opacity: 1;  
+  }  
+</style>  
+</head>  
+<body>  
+<div class="container" id="container">  
+  <img src="logo.png" alt="IndaiaFibra" class="logo">  
+  <h2>✨ Avalie nosso atendimento!</h2>  
+  <p>Obrigado por escolher a IndaiaFibra  😊</p>  
+
+  <!-- Estrelas de avaliação -->  
+  <div class="stars" id="stars">  
+    <span class="star" data-value="1">⭐</span>  
+    <span class="star" data-value="2">⭐</span>  
+    <span class="star" data-value="3">⭐</span>  
+    <span class="star" data-value="4">⭐</span>  
+    <span class="star" data-value="5">⭐</span>  
+  </div>  
+
+  <textarea id="mensagem" placeholder="Fui atendido pelo técnico da IndaiaFibra com profissionalismo e cordialidade. Recebi todas as orientações necessárias sobre meu plano contratado e sobre a configuração das tecnologias de internet e wi-fi, de forma clara e eficiente. Estou plenamente satisfeito com o serviço prestado e recomendo a IndaiaFibra pela qualidade e comprometimento no atendimento ao cliente." readonly></textarea>  
+  <button id="avaliarBtn">🚀 Avaliar agora</button>  
+  <p class="footer">Agradecemos sua confiança na IndaiaFibra 💙</p>  
+</div>  
+  
+<script>  
+const botao = document.getElementById('avaliarBtn');  
+const container = document.getElementById('container');  
+const stars = document.querySelectorAll('.star');  
+let selectedRating = 0;  
+
+// Sistema de seleção de estrelas com opacidade inicial
+stars.forEach(star => {  
+  star.addEventListener('click', () => {  
+    selectedRating = star.dataset.value;  
+    stars.forEach((s, i) => {  
+      if(i < selectedRating) {  
+        s.classList.add('selected');  
+      } else {  
+        s.classList.remove('selected');  
+      }  
+    });  
+  });  
+});  
+
+botao.addEventListener('click', () => {  
+  const texto = document.getElementById('mensagem').placeholder;  
+  const finalText = `${texto}\nAvaliação: ${selectedRating}⭐`;  
+  navigator.clipboard.writeText(finalText);  
+  
+  // Faz sumir todo o card  
+  container.classList.add('fade-out');  
+  
+  // Cria texto centralizado  
+  const redirectText = document.createElement('div');  
+  redirectText.classList.add('redirect-text');  
+  redirectText.innerText = 'Você está sendo redirecionado para avaliação no Google…';  
+  document.body.appendChild(redirectText);  
+  
+  // Cria o foguete  
+  const rocket = document.createElement('div');  
+  rocket.classList.add('launch');  
+  rocket.innerText = '🚀';  
+  document.body.appendChild(rocket);  
+  
+  // Redireciona após animação  
+  setTimeout(() => {  
+    window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';  
+  }, 1700);  
+});  
+</script>  
+</body>  
+</html>
