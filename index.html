@@ -1,135 +1,405 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IndaiaFibra - Avaliação</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      background: linear-gradient(135deg, #000000, #001933, #003366);
-      color: #fff;
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
       font-family: 'Poppins', sans-serif;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      margin: 0;
-      position: relative;
+      flex-direction: column;
+      background: black;
+      color: white;
+    }
+
+    #spaceCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #002244 0%, #000814 80%);
+      z-index: 0;
+      transition: transform 8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 30%, rgba(60, 80, 140, 0.25) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 70%, rgba(80, 60, 140, 0.2) 0%, transparent 50%);
+      z-index: 1;
+      opacity: 0.5;
+      animation: nebulaPulse 15s ease-in-out infinite;
+    }
+
+    .hyperdrive {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 0.5s ease-in;
     }
 
     img {
-      width: 130px;
-      opacity: 0;
-      transform: translate(-120px, 80px) scale(0.8) rotate(-15deg);
-      animation: entradaLogo 1.3s ease-out forwards;
-      filter: drop-shadow(0 0 12px rgba(0, 162, 255, 0.4));
+      width: 150px;
+      transform: translateY(100vh) scale(0.7);
+      animation: entradaLogo 3.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+      filter: drop-shadow(0 0 30px rgba(50, 255, 174, 1)) brightness(1.3) saturate(1.8);
+      z-index: 5;
       position: relative;
-      z-index: 3;
     }
 
-    /* Rastro de brilho */
-    .brilho {
+    .flare {
       position: absolute;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, rgba(0, 162, 255, 0.8) 0%, transparent 70%);
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
       opacity: 0;
-      border-radius: 50%;
-      filter: blur(25px);
-      transform: translate(-120px, 80px);
-      z-index: 2;
+      z-index: 4;
+      animation: flareEffect 0.5s ease-out forwards;
+      pointer-events: none;
     }
 
     p {
-      font-size: 1.2rem;
-      margin-top: 18px;
+      font-size: 1.6rem;
+      margin: 10px 0;
       opacity: 0;
-      animation: textoAparece 1.3s ease-out 0.6s forwards;
+      z-index: 5;
+      position: relative;
+      text-shadow: 0 0 20px rgba(255, 150, 50, 1), 0 0 40px rgba(255, 255, 255, 0.6);
+      letter-spacing: 2px;
+      text-align: center;
     }
 
-    /* ====== Animações ====== */
+    #text1 { animation: textoAparece 1.5s ease-out 2.5s forwards; }
+    #text2 { animation: textoAparece 1.5s ease-out 3.5s forwards; font-size: 2rem; font-weight: 600; }
+
+    .rastro {
+      position: absolute;
+      width: 50px;
+      height: 350px;
+      background: linear-gradient(to top, rgba(255, 230, 100, 0), rgba(0, 139, 255, 0.8), rgba(255, 100, 50, 0.9));
+      border-radius: 60px;
+      filter: blur(120px);
+      z-index: 4;
+      opacity: 0.9;
+      animation: pulsoRastro 0.7s ease-in-out infinite;
+    }
+
+    .rastro-core {
+      position: absolute;
+      width: 20px;
+      height: 300px;
+      background: linear-gradient(to top, rgba(255, 150, 50, 0.5), rgba(255, 255, 255, 1));
+      border-radius: 40px;
+      filter: blur(40px);
+      z-index: 4;
+      opacity: 0.95;
+      animation: pulsoRastroCore 0.5s ease-in-out infinite;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 1);
+      opacity: 0;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 1s ease-in;
+    }
+
     @keyframes entradaLogo {
-      0% {
-        opacity: 0;
-        transform: translate(-120px, 80px) scale(0.8) rotate(-15deg);
-      }
-      70% {
-        opacity: 1;
-        transform: translate(10px, -10px) scale(1.05) rotate(3deg);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(0, 0) scale(1) rotate(0);
-      }
+      0% { transform: translateY(100vh) scale(0.7); }
+      40% { transform: translateY(30px) scale(1.3); }
+      60% { transform: translateY(-20px) scale(0.95); }
+      100% { transform: translateY(0) scale(1); }
     }
 
     @keyframes textoAparece {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(40px); filter: blur(8px); }
+      50% { opacity: 0.8; transform: translateY(0); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
-    @keyframes saidaLogo {
-      0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-180px) scale(0.7);
-        opacity: 0;
-      }
+    @keyframes zoomLogo {
+      0% { transform: translateY(0) scale(1); filter: brightness(1.3); }
+      100% { transform: translateY(-120vh) scale(0.25); filter: brightness(2.5) drop-shadow(0 0 70px rgba(255, 150, 50, 1)); }
     }
 
-    @keyframes rastroBrilho {
-      0% {
-        opacity: 0;
-        transform: translate(-120px, 80px) scale(0.6);
-      }
-      40% {
-        opacity: 0.9;
-        transform: translate(-40px, 40px) scale(1);
-      }
-      70% {
-        opacity: 1;
-        transform: translate(10px, 0) scale(1.1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(30px, -120px) scale(0.8);
-      }
+    @keyframes pulsoRastro {
+      0% { opacity: 0.9; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.3); }
+      100% { opacity: 0.9; transform: scaleY(1); }
+    }
+
+    @keyframes pulsoRastroCore {
+      0% { opacity: 0.95; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.25); }
+      100% { opacity: 0.95; transform: scaleY(1); }
+    }
+
+    @keyframes cameraZoom {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.4); }
+    }
+
+    @keyframes nebulaPulse {
+      0% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.03); }
+      100% { opacity: 0.5; transform: scale(1); }
+    }
+
+    @keyframes flareEffect {
+      0% { opacity: 0.8; transform: scale(0.1); }
+      100% { opacity: 0; transform: scale(2); }
     }
   </style>
 </head>
 <body>
-  <div class="brilho" id="brilho"></div>
+  <canvas id="spaceCanvas"></canvas>
+  <div class="nebula"></div>
+  <div class="hyperdrive" id="hyperdrive"></div>
+  <div class="rastro" id="rastro"></div>
+  <div class="rastro-core" id="rastroCore"></div>
+  <div class="flare" id="flare"></div>
   <img id="logo" src="logo.png" alt="IndaiaFibra Logo">
-  <p>Obrigado por escolher a IndaiaFibra 😊</p>
+  <p id="text1">Obrigado por escolher</p>
+  <p id="text2">IndaiaFibra 🚀</p>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- <audio id="ambientSound" src="trailer-sound.mp3" autoplay></audio> -->
 
   <script>
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx = canvas.getContext('2d');
     const logo = document.getElementById('logo');
-    const brilho = document.getElementById('brilho');
+    const rastro = document.getElementById('rastro');
+    const rastroCore = document.getElementById('rastroCore');
+    const flare = document.getElementById('flare');
+    const overlay = document.getElementById('overlay');
+    let hyperdriveActive = false;
+    let isDragging = false;
+    let isEasterEggActivated = false;
 
-    // Inicia o rastro junto com a entrada do logo
-    brilho.style.animation = "rastroBrilho 1.4s ease-out forwards";
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-    // Animação de saída do logo e rastro
+    const stars = Array.from({ length: 400 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 0.3,
+      speed: Math.random() * 1 + 0.2,
+      brightness: Math.random() * 0.5 + 0.5,
+      layer: Math.random() < 0.4 ? 'distant' : Math.random() < 0.6 ? 'mid' : 'near',
+      isHyper: false
+    }));
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let s of stars) {
+        ctx.fillStyle = s.layer === 'distant' ? '#aaa' : s.layer === 'mid' ? '#ccc' : '#fff';
+        ctx.globalAlpha = s.brightness;
+        if (hyperdriveActive && s.isHyper) {
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(s.x, s.y + s.size * 20);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.lineWidth = s.size;
+          ctx.stroke();
+          s.y += s.speed * 10;
+        } else {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.layer === 'distant' ? s.size * 0.5 : s.layer === 'mid' ? s.size * 0.8 : s.size, 0, Math.PI * 2);
+          ctx.fill();
+          s.y += s.layer === 'distant' ? s.speed * 0.5 : s.layer === 'mid' ? s.speed * 0.8 : s.speed;
+        }
+        if (s.y > canvas.height) s.y = 0;
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    const particles = [];
+    function createParticle(x, y, isSmoke = false) {
+      particles.push({
+        x: x + (Math.random() * 50 - 25),
+        y: y,
+        alpha: 1,
+        size: isSmoke ? Math.random() * 20 + 10 : Math.random() * 6 + 3,
+        vx: isSmoke ? Math.random() * 2 - 1 : Math.random() * 4 - 2,
+        vy: isSmoke ? Math.random() * 2 + 1 : Math.random() * 8 + 4,
+        color: isSmoke ? `hsl(0, 0%, ${Math.random() * 20 + 50}%)` : `hsl(${Math.random() * 40 + 20}, 100%, ${Math.random() * 30 + 50}%)`,
+        decay: isSmoke ? Math.random() * 0.01 + 0.005 : Math.random() * 0.03 + 0.02,
+        rotation: Math.random() * Math.PI * 2,
+        isSmoke
+      });
+    }
+
+    function updateParticles() {
+      const rect = logo.getBoundingClientRect();
+      for (let i = 0; i < 3; i++) createParticle(rect.left + rect.width / 2, rect.bottom - 5);
+      for (let i = 0; i < 2; i++) createParticle(rect.left + rect.width / 2, rect.bottom - 5, true);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        p.size *= p.isSmoke ? 0.98 : 0.95;
+        p.vy += 0.1;
+        p.rotation += p.isSmoke ? 0.05 : 0.1;
+        if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
+      }
+
+      particles.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        if (!p.isSmoke && Math.random() < 0.2) {
+          ctx.fillStyle = 'white';
+          ctx.globalAlpha = p.alpha * 0.7;
+          ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
+        }
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+
+      rastro.style.left = `${rect.left + rect.width / 2 - 25}px`;
+      rastro.style.top = `${rect.bottom - 10}px`;
+      rastroCore.style.left = `${rect.left + rect.width / 2 - 10}px`;
+      rastroCore.style.top = `${rect.bottom - 5}px`;
+
+      requestAnimationFrame(updateParticles);
+    }
+    updateParticles();
+
+    // Easter Egg: Controle do movimento do logo
+    function moveLogo(x, y) {
+      if (isDragging) {
+        const newX = x - logo.offsetWidth / 2;
+        const newY = y - logo.offsetHeight / 2;
+        logo.style.position = 'absolute';
+        logo.style.left = `${newX}px`;
+        logo.style.top = `${newY}px`;
+        logo.style.transform = 'none'; // Remove transform para evitar conflito com animação
+      }
+    }
+
+    // Eventos de mouse
+    document.addEventListener('mousedown', (event) => {
+      isDragging = true;
+      isEasterEggActivated = true;
+      moveLogo(event.clientX, event.clientY);
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (isDragging) {
+        moveLogo(event.clientX, event.clientY);
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        triggerExitSequence();
+      }
+    });
+
+    // Eventos de toque para dispositivos móveis
+    document.addEventListener('touchstart', (event) => {
+      event.preventDefault();
+      isDragging = true;
+      isEasterEggActivated = true;
+      const touch = event.touches[0];
+      moveLogo(touch.clientX, touch.clientY);
+    });
+
+    document.addEventListener('touchmove', (event) => {
+      event.preventDefault();
+      if (isDragging) {
+        const touch = event.touches[0];
+        moveLogo(touch.clientX, touch.clientY);
+      }
+    });
+
+    document.addEventListener('touchend', () => {
+      if (isDragging) {
+        isDragging = false;
+        triggerExitSequence();
+      }
+    });
+
+    // Função para disparar a sequência de saída (zoom, hiperdrive, fade e redirecionamento)
+    function triggerExitSequence() {
+      logo.style.animation = 'zoomLogo 2s ease-in forwards';
+      canvas.style.animation = 'cameraZoom 2s ease-in forwards';
+      hyperdriveActive = true;
+      stars.forEach(s => s.isHyper = Math.random() < 0.4);
+      document.getElementById('hyperdrive').style.opacity = '0.4';
+
+      setTimeout(() => {
+        document.querySelector('#text1').style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        document.querySelector('#text2').style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        document.querySelector('#text1').style.opacity = '0';
+        document.querySelector('#text2').style.opacity = '0';
+        document.querySelector('#text1').style.transform = 'translateY(30px)';
+        document.querySelector('#text2').style.transform = 'translateY(30px)';
+      }, 1000);
+
+      setTimeout(() => {
+        overlay.style.opacity = '0.5';
+        setTimeout(() => {
+          overlay.style.opacity = '1';
+        }, 300);
+      }, 2500);
+
+      setTimeout(() => {
+        window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';
+      }, 4000);
+    }
+
+    // Animações iniciais
     setTimeout(() => {
-      logo.style.animation = "saidaLogo 1s ease-in forwards";
-      brilho.style.animation = "rastroBrilho 1s ease-in forwards";
-    }, 1300);
+      const rect = logo.getBoundingClientRect();
+      flare.style.left = `${rect.left + rect.width / 2 - 100}px`;
+      flare.style.top = `${rect.top + rect.height / 2 - 100}px`;
+      flare.style.animation = 'flareEffect 0.5s ease-out forwards';
+    }, 1000);
 
-    // Redirecionamento automático
+    // Iniciar sequência padrão apenas se o easter egg não for ativado
     setTimeout(() => {
-      window.location.href = "https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM";
-    }, 2400);
+      if (!isEasterEggActivated) {
+        triggerExitSequence();
+      }
+    }, 4000);
   </script>
 </body>
 </html>
