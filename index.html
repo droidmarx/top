@@ -195,6 +195,8 @@
       gap: 20px;
       text-align: center;
       padding: 20px;
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
     }
 
     #gameOverOverlay h2 {
@@ -203,12 +205,135 @@
       font-weight: 700;
       text-shadow: 0 0 20px rgba(255,0,0,0.8);
       letter-spacing: 2px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.6s ease-out;
     }
 
     #gameOverOverlay p {
       font-size: 1.8rem;
       margin: 0 0 20px;
       text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.8s ease-out;
+    }
+
+    #gameOverOverlay.show h2,
+    #gameOverOverlay.show p {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .score {
+      color: #FFD700;
+      text-shadow: 0 0 15px #FFD700;
+      font-weight: 700;
+      font-size: 1.2em;
+    }
+
+    #top5 {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+      max-width: 300px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.5s ease-out;
+    }
+
+    #top5 li {
+      font-size: 1.2rem;
+      margin: 8px 0;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      text-align: left;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      opacity: 0;
+      transform: translateX(-30px) translateY(20px);
+      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    #top5.animate-ranking {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #top5.animate-ranking li:nth-child(1) {
+      transition-delay: 0.2s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(2) {
+      transition-delay: 0.3s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(3) {
+      transition-delay: 0.4s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(4) {
+      transition-delay: 0.5s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(5) {
+      transition-delay: 0.6s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5 li:nth-child(1)::before {
+      content: '🥇 ';
+      font-size: 1.1em;
+    }
+
+    #top5 li:nth-child(2)::before {
+      content: '🥈 ';
+      font-size: 1.1em;
+    }
+
+    #top5 li:nth-child(3)::before {
+      content: '🥉 ';
+      font-size: 1.1em;
+    }
+
+    #nameInput {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    #nameInput input {
+      padding: 10px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 15px;
+      width: 200px;
+      max-width: 80%;
+      background: rgba(255, 255, 255, 0.9);
+      color: black;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #nameInput button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      min-width: auto;
+      width: auto;
     }
 
     #gameOverOverlay button {
@@ -224,6 +349,14 @@
       min-width: auto;
       box-shadow: 0 4px 15px rgba(21, 94, 183, 0.3);
       transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    #gameOverOverlay.show button {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.8s;
     }
 
     #gameOverOverlay button:hover {
@@ -283,6 +416,15 @@
 
       #gameOverOverlay p {
         font-size: 1.5rem;
+      }
+
+      #top5 li {
+        font-size: 1.1rem;
+      }
+
+      #nameInput input {
+        width: 250px;
+        max-width: 90%;
       }
     }
 
@@ -394,7 +536,9 @@
   <div class="overlay" id="overlay"></div>
   <div id="gameOverOverlay">
     <h2>Game Over!</h2>
-    <p><h1></h1> PONTUAÇÃO: </h1></h1><h1 class="score">0</h1></p>
+    <p>PONTUAÇÃO: <span class="score">0</span></p>
+    <ul id="top5"></ul>
+    <div id="nameInput"></div>
     <button onclick="restartGame()">Jogar Novamente</button>
     <button onclick="exitGame()">Sair do Jogo</button>
     <button onclick="triggerExitSequence()">Avaliar Serviço</button>
@@ -441,6 +585,9 @@
     let difficultyLevel = 0;
     let asteroidSpawnRate = 0.03;
     let maxAsteroidSpeed = 6;
+    let lastDifficultyIncrease = 0;
+
+    const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
 
     // Cores para o rastro baseadas no powerUpLevel
     const trailColors = {
@@ -455,6 +602,72 @@
       if ('vibrate' in navigator && window.matchMedia('(pointer: coarse)').matches) {
         navigator.vibrate(duration);
       }
+    }
+
+    async function fetchScores() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) return [];
+        return await res.json();
+      } catch (e) {
+        console.error('Erro ao buscar scores:', e);
+        return [];
+      }
+    }
+
+    async function saveScore(name, score) {
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, score })
+        });
+      } catch (e) {
+        console.error('Erro ao salvar score:', e);
+        alert('Erro ao salvar score. Tente novamente.');
+      }
+    }
+
+    async function fetchTop5(currentScore, showInput = true) {
+      const scores = await fetchScores();
+      const top = scores.sort((a, b) => b.score - a.score).slice(0, 5);
+      const topList = document.getElementById('top5');
+      topList.innerHTML = top.length ? top.map((s, i) => `<li>${i + 1}. ${s.name}: ${s.score}</li>`).join('') : '<li>Nenhum recorde ainda</li>';
+
+      const fifthScore = top[4]?.score || 0;
+      if (showInput && (currentScore > fifthScore || top.length < 5)) {
+        let inputDiv = document.getElementById('nameInput');
+        if (!inputDiv.children.length) {
+          inputDiv.innerHTML = `
+            <p style="font-size: 1.2rem; margin: 0;">Novo recorde! Insira seu nome:</p>
+            <input type="text" id="nameField" placeholder="Seu nome" maxlength="20">
+            <button onclick="saveNewScore(${currentScore})">Salvar Score</button>
+          `;
+        }
+        inputDiv.style.display = 'block';
+      } else {
+        document.getElementById('nameInput').style.display = 'none';
+      }
+
+      // Animação legal para o Ranking TOP 5
+      setTimeout(() => {
+        topList.classList.add('animate-ranking');
+      }, 100);
+    }
+
+    function saveNewScore(currentScore) {
+      const name = document.getElementById('nameField').value.trim();
+      if (!name) {
+        alert('Nome é obrigatório!');
+        return;
+      }
+      saveScore(name, currentScore).then(() => {
+        const inputDiv = document.getElementById('nameInput');
+        inputDiv.innerHTML = ''; // Remove os elementos do DOM
+        inputDiv.style.display = 'none';
+        fetchTop5(currentScore, false); // Atualiza o top 5 sem mostrar o input novamente
+        alert('Score salvo com sucesso!');
+      });
     }
 
     function resizeCanvas() {
@@ -763,7 +976,7 @@
       shipX = (canvas.width - shipWidth) / 2;
       shipY = canvas.height - shipHeight - 50;
       score = 0;
-      lives = 0;
+      lives = 3; // Corrigido para 3 vidas
       asteroids = [];
       powerups = [];
       bullets = [];
@@ -776,7 +989,7 @@
       keys = {};
       currentSpeed = baseSpeed;
       shieldActive = false;
-      speedBoostEndTime = 2;
+      speedBoostEndTime = 0;
       lastTime = performance.now();
       gameLoop(lastTime);
     }
@@ -1057,9 +1270,27 @@
       rastro.style.opacity = '0.9';
       rastroCore.style.opacity = '0.95';
       if (!forceResume) {
-        gameOverOverlay.querySelector('.score').textContent = score;
+        // Exibir score primeiro com animação
         gameOverOverlay.style.display = 'flex';
-        // Não mostrar button-container no game over, só no exit
+        gameOverOverlay.style.opacity = '0';
+        setTimeout(() => {
+          gameOverOverlay.style.opacity = '1';
+          gameOverOverlay.classList.add('show');
+          const scoreEl = gameOverOverlay.querySelector('.score');
+          scoreEl.style.opacity = '0';
+          scoreEl.style.transform = 'scale(0.5)';
+          scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
+          scoreEl.textContent = score;
+          setTimeout(() => {
+            scoreEl.style.opacity = '1';
+            scoreEl.style.transform = 'scale(1)';
+          }, 100);
+        }, 300);
+
+        // Após exibir score, animação para o Ranking TOP 5
+        setTimeout(() => {
+          fetchTop5(score);
+        }, 2000);
       } else {
         gameOverOverlay.style.display = 'none';
         buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo após game over
@@ -1069,6 +1300,10 @@
 
     function restartGame() {
       gameOverOverlay.style.display = 'none';
+      gameOverOverlay.classList.remove('show');
+      document.getElementById('nameInput').style.display = 'none';
+      document.getElementById('nameInput').innerHTML = ''; // Limpa o conteúdo ao reiniciar
+      document.getElementById('top5').classList.remove('animate-ranking');
       startGame();
     }
 
