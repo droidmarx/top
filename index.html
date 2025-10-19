@@ -319,7 +319,7 @@
 
     #nameInput input {
       padding: 10px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       border: none;
       border-radius: 15px;
       width: 200px;
@@ -334,6 +334,23 @@
       font-size: 1rem;
       min-width: auto;
       width: auto;
+    }
+
+    .success-message {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      color: #00ff00;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+      margin: 10px 0;
+    }
+
+    .success-message.show {
+      opacity: 1;
+      transform: scale(1);
     }
 
     #gameOverOverlay button {
@@ -425,6 +442,10 @@
       #nameInput input {
         width: 250px;
         max-width: 90%;
+      }
+
+      .success-message {
+        font-size: 1.4rem;
       }
     }
 
@@ -565,7 +586,7 @@
     shipImg.src = 'logo.png';
     let shipX, shipY, shipWidth = 120, shipHeight = 120;
     let score = 0;
-    let lives = 2;
+    let lives = 3;
     let gameStartTime;
     let keys = {};
     let asteroids = [];
@@ -640,7 +661,7 @@
         if (!inputDiv.children.length) {
           inputDiv.innerHTML = `
             <p style="font-size: 1.2rem; margin: 0;">Novo recorde! Insira seu nome:</p>
-            <input type="text" id="nameField" placeholder="Seu nome" maxlength="20">
+            <input type="text" id="nameField" placeholder="Seu nome" maxlength="15">
             <button onclick="saveNewScore(${currentScore})">Salvar Score</button>
           `;
         }
@@ -663,10 +684,35 @@
       }
       saveScore(name, currentScore).then(() => {
         const inputDiv = document.getElementById('nameInput');
-        inputDiv.innerHTML = ''; // Remove os elementos do DOM
-        inputDiv.style.display = 'none';
-        fetchTop5(currentScore, false); // Atualiza o top 5 sem mostrar o input novamente
-        alert('Score salvo com sucesso!');
+        
+        // Criar mensagem de sucesso
+        const successMsg = document.createElement('p');
+        successMsg.className = 'success-message';
+        successMsg.innerHTML = '✅ Score salvo com sucesso!';
+        successMsg.style.opacity = '0';
+        successMsg.style.transform = 'scale(0.8)';
+        
+        // Adicionar à div e mostrar
+        inputDiv.innerHTML = ''; // Limpa o input anterior
+        inputDiv.appendChild(successMsg);
+        inputDiv.style.display = 'block';
+        
+        // Animação de entrada
+        setTimeout(() => {
+          successMsg.classList.add('show');
+        }, 10);
+        
+        // Animação de saída após 1.5s
+        setTimeout(() => {
+          successMsg.style.opacity = '0';
+          successMsg.style.transform = 'scale(1.1)';
+          setTimeout(() => {
+            inputDiv.removeChild(successMsg);
+            inputDiv.innerHTML = '';
+            inputDiv.style.display = 'none';
+            fetchTop5(currentScore, false);
+          }, 500);
+        }, 1500);
       });
     }
 
@@ -955,6 +1001,64 @@
       ctx.shadowBlur = 0;
     }
 
+    // Função para atirar baseada no nível de power-up
+    function shoot() {
+      if (powerUpLevel === 0) return;
+
+      const shipCenterX = shipX + shipWidth / 2;
+      const shipCenterY = shipY;
+      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com nível
+      const baseSize = 2 + powerUpLevel * 2; // Calibre (tamanho) aumenta
+      const color = powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000';
+
+      if (powerUpLevel === 1) {
+        // Tiro único reto
+        bullets.push({
+          x: shipCenterX,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+      } else if (powerUpLevel === 2) {
+        // Dois tiros paralelos
+        const offset = 15;
+        bullets.push({
+          x: shipCenterX - offset,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+        bullets.push({
+          x: shipCenterX + offset,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+      } else if (powerUpLevel === 3) {
+        // Três tiros em spread (leque)
+        const angleSpread = Math.PI / 6; // 30 graus de spread total
+        for (let i = -1; i <= 1; i++) {
+          const angle = i * (angleSpread / 2);
+          bullets.push({
+            x: shipCenterX,
+            y: shipCenterY,
+            vx: Math.sin(angle) * baseSpeed * 0.3, // Lateral pequeno
+            vy: -Math.cos(angle) * baseSpeed,
+            size: baseSize,
+            color: color
+          });
+        }
+      }
+
+      vibrate(30 + powerUpLevel * 10); // Vibração maior com nível mais alto
+    }
+
     // Game functions
     function startGame() {
       if (gameActive) return;
@@ -976,7 +1080,7 @@
       shipX = (canvas.width - shipWidth) / 2;
       shipY = canvas.height - shipHeight - 50;
       score = 0;
-      lives = 3; // Corrigido para 3 vidas
+      lives = 3;
       asteroids = [];
       powerups = [];
       bullets = [];
@@ -1037,15 +1141,9 @@
         createThrustParticle(shipX + shipWidth / 2, shipY + shipHeight);
       }
 
+      // Atirar baseado no powerUpLevel
       if (keys[' '] && powerUpLevel > 0) {
-        bullets.push({
-          x: shipX + shipWidth / 2,
-          y: shipY,
-          vx: 0,
-          vy: - (8 + powerUpLevel * 2),
-          size: 2 + powerUpLevel * 2,
-          color: powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000'
-        });
+        shoot();
         keys[' '] = false;
       }
 
@@ -1065,6 +1163,7 @@
 
       for (let i = bullets.length - 1; i >= 0; i--) {
         let b = bullets[i];
+        b.x += b.vx * deltaTime;
         b.y += b.vy * deltaTime;
         if (b.y < 0) {
           bullets.splice(i, 1);
@@ -1076,7 +1175,7 @@
           const bdy = b.y - a.y;
           const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
           if (bdist < b.size + a.size) {
-            score += 20;
+            score += 20 * powerUpLevel; // Pontos extras baseado no nível
             bullets.splice(i, 1);
             createExplosion(a.x, a.y, 12); // Explosão marrom
             vibrate(50); // Vibração no acerto
@@ -1191,7 +1290,7 @@
         ctx.shadowBlur = 10;
         ctx.fillStyle = b.color;
         ctx.beginPath();
-        ctx.rect(b.x - 2, b.y - 10, 4, 20);
+        ctx.rect(b.x - b.size / 2, b.y - b.size * 2, b.size, b.size * 4);
         ctx.fill();
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
@@ -1257,7 +1356,7 @@
         shieldEndTime = currentTime + 5000;
         shieldActive = true;
       } else if (type === 'life') {
-        lives++;
+        lives = Math.min(10, lives + 1); // Máximo 10 vidas
       }
     }
 
@@ -1362,20 +1461,6 @@
       shipY = Math.max(0, Math.min(canvas.height - shipHeight, ty - shipHeight / 2));
     }
 
-    function shoot() {
-      if (powerUpLevel > 0) {
-        bullets.push({
-          x: shipX + shipWidth / 2,
-          y: shipY,
-          vx: 0,
-          vy: - (8 + powerUpLevel * 2),
-          size: 2 + powerUpLevel * 2,
-          color: powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000'
-        });
-        vibrate(30); // Vibração leve no tiro
-      }
-    }
-
     document.addEventListener('dblclick', (e) => {
       if (gameActive && powerUpLevel > 0) {
         e.preventDefault();
@@ -1417,11 +1502,11 @@
       }, 2500);
 
       setTimeout(() => {
-  window.open(
-    'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM',
-    '_blank'
-  );
-}, 4000);
+        window.open(
+          'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM',
+          '_blank'
+        );
+      }, 4000);
     }
 
     setTimeout(() => {
