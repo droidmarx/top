@@ -535,6 +535,29 @@
       100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
     }
 
+    @keyframes logoFlyover {
+      0% {
+        transform: translate(0, 100vh) scale(0.5) rotate(0deg);
+        opacity: 0;
+        filter: drop-shadow(0 0 10px rgba(21, 94, 183, 0.5));
+      }
+      30% {
+        transform: translate(20vw, 70vh) scale(0.8) rotate(10deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 20px rgba(21, 94, 183, 0.8));
+      }
+      70% {
+        transform: translate(-20vw, 30vh) scale(1.2) rotate(-5deg);
+        opacity: 1;
+        filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1));
+      }
+      100% {
+        transform: translate(0, -100vh) scale(0.5) rotate(0deg);
+        opacity: 0;
+        filter: drop-shadow(0 0 10px rgba(21, 94, 183, 0.5));
+      }
+    }
+
     .powerup {
       position: absolute;
       border-radius: 50%;
@@ -575,6 +598,8 @@
   <audio id="shieldSound" src="shield.mp3" preload="auto"></audio>
   <audio id="hitSound" src="hit.mp3" preload="auto"></audio>
   <audio id="thrustSound" src="thrust.mp3" loop preload="auto"></audio>
+  <audio id="ammoRegenSound" src="ammo_regen.mp3" preload="auto"></audio> <!-- Novo som para regeneração de munição -->
+  <audio id="downgradeSound" src="downgrade.mp3" preload="auto"></audio> <!-- Novo som para regressão de modelo de tiro -->
 
   <script>
     const canvas = document.getElementById('spaceCanvas');
@@ -596,20 +621,26 @@
     let shipX, shipY, shipWidth = 120, shipHeight = 120;
     let score = 0;
     let lives = 5;
+    let ammo = 3;
+    const maxAmmo = [0, 20, 10, 5, 3]; // Modelo 1:20, 2:10, 3:5, 4:3
+    let destroyedMeteors = 0;
+    let lastAmmoRegen = Date.now();
+    let ammoRegenInterval = 3000;
+    let downgradeFlash = 0;
     let gameStartTime;
     let keys = {};
     let asteroids = [];
     let powerups = [];
     let bullets = [];
+    let lasers = []; // Novo para lasers do modelo 4
     let thrustParticles = [];
     let explosionParticles = [];
     let asteroidFlames = [];
-    let powerUpLevel = 0;
+    let powerUpLevel = 4; // Inicia com modelo 4 (laser, melhor)
     let baseSpeed = 4;
     let currentSpeed = baseSpeed;
     let shieldActive = false;
     let shieldCount = 0;
-    let shieldEndTime = 0;
     let speedBoostEndTime = 0;
     let touchActive = false;
     let doubleClickTimer = 0;
@@ -630,20 +661,23 @@
     const shieldSound = document.getElementById('shieldSound');
     const hitSound = document.getElementById('hitSound');
     const thrustSound = document.getElementById('thrustSound');
+    const ammoRegenSound = document.getElementById('ammoRegenSound');
+    const downgradeSound = document.getElementById('downgradeSound');
 
     // Função para tocar som
     function playSound(sound) {
       sound.currentTime = 0;
-      sound.volume = 0.5; // Volume padrão para efeitos
+      sound.volume = 0.5;
       sound.play().catch(e => console.log('Erro ao tocar som:', e));
     }
 
     // Cores para o rastro baseadas no powerUpLevel
     const trailColors = {
-      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' }, // Laranja para default, fumaça marrom
+      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' },
       1: { fire: 'hsl(200, 100%, 50%)', smoke: 'hsl(200, 50%, 60%)' },
       2: { fire: 'hsl(60, 100%, 50%)', smoke: 'hsl(60, 50%, 70%)' },
-      3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' }
+      3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' },
+      4: { fire: 'hsl(0, 100%, 60%)', smoke: 'hsl(0, 50%, 50%)' }
     };
 
     // Função para vibração em dispositivos móveis
@@ -698,7 +732,6 @@
         document.getElementById('nameInput').style.display = 'none';
       }
 
-      // Animação legal para o Ranking TOP 5
       setTimeout(() => {
         topList.classList.add('animate-ranking');
       }, 100);
@@ -713,24 +746,20 @@
       saveScore(name, currentScore).then(() => {
         const inputDiv = document.getElementById('nameInput');
         
-        // Criar mensagem de sucesso
         const successMsg = document.createElement('p');
         successMsg.className = 'success-message';
         successMsg.innerHTML = '✅ Score salvo com sucesso!';
         successMsg.style.opacity = '0';
         successMsg.style.transform = 'scale(0.8)';
         
-        // Adicionar à div e mostrar
-        inputDiv.innerHTML = ''; // Limpa o input anterior
+        inputDiv.innerHTML = '';
         inputDiv.appendChild(successMsg);
         inputDiv.style.display = 'block';
         
-        // Animação de entrada
         setTimeout(() => {
           successMsg.classList.add('show');
         }, 10);
         
-        // Animação de saída após 1.5s
         setTimeout(() => {
           successMsg.style.opacity = '0';
           successMsg.style.transform = 'scale(1.1)';
@@ -847,10 +876,8 @@
       rafIdParticles = requestAnimationFrame(updateParticles);
     }
 
-    // Função para criar partículas de thrust com cor baseada no powerUpLevel e fumaça marrom
     function createThrustParticle(x, y) {
       const colors = trailColors[powerUpLevel] || trailColors[0];
-      // Fogo
       for (let i = 0; i < 3; i++) {
         thrustParticles.push({
           x: x + Math.random() * 20 - 10,
@@ -865,7 +892,6 @@
           glow: true
         });
       }
-      // Poeira/fumaça marrom
       for (let i = 0; i < 4; i++) {
         thrustParticles.push({
           x: x + Math.random() * 20 - 10,
@@ -874,7 +900,7 @@
           vy: Math.random() * 3 + 1.5,
           size: Math.random() * 8 + 3,
           alpha: 0.8,
-          color: colors.smoke, // Marrom
+          color: colors.smoke,
           decay: 0.025,
           life: 45,
           trail: true
@@ -882,7 +908,6 @@
       }
     }
 
-    // Update thrust particles
     function updateThrustParticles() {
       for (let i = thrustParticles.length - 1; i >= 0; i--) {
         const p = thrustParticles[i];
@@ -898,7 +923,6 @@
       }
     }
 
-    // Draw thrust particles
     function drawThrustParticles() {
       thrustParticles.forEach(p => {
         ctx.save();
@@ -913,7 +937,7 @@
         ctx.fill();
         if (p.trail && Math.random() < 0.3) {
           ctx.globalAlpha = p.alpha * 0.5;
-          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)'; // Marrom claro para trail
+          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
           ctx.beginPath();
           ctx.arc(p.x - p.vx * 2, p.y - p.vy * 2, p.size * 0.5, 0, Math.PI * 2);
           ctx.fill();
@@ -923,7 +947,6 @@
       ctx.shadowBlur = 0;
     }
 
-    // Partículas de explosão marrom
     function createExplosion(x, y, count = 8) {
       for (let i = 0; i < count; i++) {
         explosionParticles.push({
@@ -933,7 +956,7 @@
           vy: (Math.random() - 0.5) * 10,
           size: Math.random() * 6 + 3,
           alpha: 1,
-          color: `hsl(20, 30%, ${Math.random() * 20 + 30}%)`, // Tons de marrom
+          color: `hsl(20, 30%, ${Math.random() * 20 + 30}%)`,
           decay: 0.05,
           life: 30,
           glow: true
@@ -972,7 +995,6 @@
       ctx.shadowBlur = 0;
     }
 
-    // Chamas para asteroides
     function createAsteroidFlame(a) {
       if (!a.flames) a.flames = [];
       for (let i = 0; i < 3; i++) {
@@ -1003,7 +1025,7 @@
               a.flames.splice(i, 1);
             }
           }
-          if (Math.random() < 0.3) createAsteroidFlame(a); // Manter chamas vivas
+          if (Math.random() < 0.3) createAsteroidFlame(a);
         } else {
           createAsteroidFlame(a);
         }
@@ -1020,7 +1042,7 @@
             ctx.shadowColor = f.color;
             ctx.shadowBlur = 6;
             ctx.beginPath();
-            ctx.ellipse(f.x, f.y, f.size, f.size * 1.5, 0, 0, Math.PI * 2); // Elipse para chama
+            ctx.ellipse(f.x, f.y, f.size, f.size * 1.5, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
           });
@@ -1029,18 +1051,43 @@
       ctx.shadowBlur = 0;
     }
 
-    // Função para atirar baseada no nível de power-up
+    // Função para atirar baseada no modelo
     function shoot() {
       if (powerUpLevel === 0) return;
 
+      if (ammo <= 0) {
+        if (powerUpLevel > 1) {
+          powerUpLevel--;
+          ammo = maxAmmo[powerUpLevel];
+          playSound(downgradeSound);
+          vibrate(80);
+          downgradeFlash = 30;
+          for (let k = 0; k < 12; k++) {
+            createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ff0000');
+          }
+          createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 6);
+        } else {
+          return;
+        }
+      }
+
+      ammo--;
+
       const shipCenterX = shipX + shipWidth / 2;
       const shipCenterY = shipY;
-      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com nível
-      const baseSize = 2 + powerUpLevel * 2; // Calibre (tamanho) aumenta
-      const color = powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000';
+      const baseSpeed = 10 + powerUpLevel * 2;
+      const baseSize = powerUpLevel;
+      let color;
+      switch (powerUpLevel) {
+        case 1: color = '#ffffff'; break;
+        case 2: color = '#ffff00'; break;
+        case 3: color = '#ff00ff'; break;
+        case 4: color = '#00ff00'; break;
+        default: color = '#ffffff';
+      }
 
       if (powerUpLevel === 1) {
-        // Tiro único reto
+        // Modelo 1: Tiro único fino para cima
         bullets.push({
           x: shipCenterX,
           y: shipCenterY,
@@ -1050,7 +1097,7 @@
           color: color
         });
       } else if (powerUpLevel === 2) {
-        // Dois tiros paralelos
+        // Modelo 2: 2 tiros paralelos para cima, calibre mais grosso
         const offset = 15;
         bullets.push({
           x: shipCenterX - offset,
@@ -1069,32 +1116,60 @@
           color: color
         });
       } else if (powerUpLevel === 3) {
-        // Três tiros em spread (leque)
-        const angleSpread = Math.PI / 6; // 30 graus de spread total
-        for (let i = -1; i <= 1; i++) {
-          const angle = i * (angleSpread / 2);
-          bullets.push({
-            x: shipCenterX,
-            y: shipCenterY,
-            vx: Math.sin(angle) * baseSpeed * 0.3, // Lateral pequeno
-            vy: -Math.cos(angle) * baseSpeed,
-            size: baseSize,
-            color: color
-          });
-        }
+        // Modelo 3: 3 tiros - um no meio, dois em diagonal para cima
+        bullets.push({
+          x: shipCenterX,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+        const angle = Math.PI / 9; // ~20 graus
+        const sideVx = Math.sin(angle) * baseSpeed;
+        const upVy = Math.cos(angle) * baseSpeed;
+        bullets.push({
+          x: shipCenterX,
+          y: shipCenterY,
+          vx: -sideVx,
+          vy: -upVy,
+          size: baseSize,
+          color: color
+        });
+        bullets.push({
+          x: shipCenterX,
+          y: shipCenterY,
+          vx: sideVx,
+          vy: -upVy,
+          size: baseSize,
+          color: color
+        });
+      } else if (powerUpLevel === 4) {
+        // Modelo 4: Varredura horizontal laser verde de baixo para cima
+        lasers.push({
+          x: 0,
+          y: shipY,
+          width: canvas.width,
+          height: 8,
+          speed: 20,
+          color: color
+        });
       }
 
       playSound(shootSound);
-      vibrate(30 + powerUpLevel * 10); // Vibração maior com nível mais alto
+      vibrate(30 + powerUpLevel * 10);
     }
 
-    // Game functions
     function startGame() {
       if (gameActive) return;
       gameActive = true;
-      // Remover completamente os botões principais
       buttonContainer.style.display = 'none';
       logo.style.opacity = '0';
+      logo.style.animation = 'none'; // Reset animação
+      logo.style.position = 'relative'; // Reset posição
+      logo.style.left = 'auto';
+      logo.style.top = 'auto';
+      logo.style.zIndex = '5';
       document.querySelector('#text1').style.display = 'none';
       document.querySelector('#text2').style.display = 'none';
       flare.style.opacity = '0';
@@ -1104,15 +1179,20 @@
       thrustParticles.length = 0;
       explosionParticles.length = 0;
       asteroidFlames = [];
+      lasers = [];
       shipX = (canvas.width - shipWidth) / 2;
       shipY = canvas.height - shipHeight - 50;
       score = 0;
       lives = 5;
+      powerUpLevel = 4;
+      ammo = maxAmmo[powerUpLevel];
+      destroyedMeteors = 0;
+      lastAmmoRegen = Date.now();
+      downgradeFlash = 0;
       shieldCount = 0;
       asteroids = [];
       powerups = [];
       bullets = [];
-      powerUpLevel = 0;
       gameStartTime = Date.now();
       lastDifficultyIncrease = gameStartTime;
       difficultyLevel = 0;
@@ -1125,7 +1205,6 @@
       isThrusting = false;
       wasMoving = false;
       lastTime = performance.now();
-      // Iniciar som ambiente
       ambientSound.play().catch(e => console.log('Erro ao tocar som ambiente:', e));
       gameLoop(lastTime);
     }
@@ -1148,11 +1227,20 @@
 
       if (Date.now() > speedBoostEndTime) currentSpeed = baseSpeed;
       else currentSpeed = baseSpeed * 1.5;
-      if (Date.now() > shieldEndTime) {
-        shieldCount = 0;
-        shieldActive = false;
-      } else {
-        shieldActive = shieldCount > 0;
+
+      shieldActive = shieldCount > 0;
+
+      if (downgradeFlash > 0) {
+        downgradeFlash--;
+      }
+
+      const now = Date.now();
+      if (now - lastAmmoRegen > ammoRegenInterval && ammo < maxAmmo[powerUpLevel]) {
+        ammo++;
+        lastAmmoRegen = now;
+        playSound(ammoRegenSound);
+        vibrate(50);
+        createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ffff00');
       }
 
       let moving = false;
@@ -1174,7 +1262,6 @@
         moving = true;
       }
 
-      // Gerenciar som de thrust
       if (moving) {
         if (!isThrusting) {
           thrustSound.volume = 0.3;
@@ -1193,7 +1280,6 @@
       }
       wasMoving = moving;
 
-      // Atirar baseado no powerUpLevel
       if (keys[' '] && powerUpLevel > 0) {
         shoot();
         keys[' '] = false;
@@ -1213,11 +1299,38 @@
         }
       }
 
+      // Atualizar lasers e colisões
+      for (let i = lasers.length - 1; i >= 0; i--) {
+        let l = lasers[i];
+        l.y -= l.speed * deltaTime;
+        // Colisões com asteroides (área varrida: entre shipY e l.y)
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+          let a = asteroids[j];
+          if (a.y < shipY && a.y > l.y) {
+            destroyedMeteors++;
+            score += 20 * powerUpLevel;
+            ammo = Math.min(maxAmmo[powerUpLevel], ammo + 1);
+            createExplosion(a.x, a.y, 12);
+            playSound(explosionSound);
+            vibrate(50);
+            asteroids.splice(j, 1);
+            if (destroyedMeteors % 5 === 0) {
+              shieldCount = Math.min(5, shieldCount + 1);
+              playSound(shieldSound);
+              vibrate(100);
+            }
+          }
+        }
+        if (l.y < 0) {
+          lasers.splice(i, 1);
+        }
+      }
+
       for (let i = bullets.length - 1; i >= 0; i--) {
         let b = bullets[i];
         b.x += b.vx * deltaTime;
         b.y += b.vy * deltaTime;
-        if (b.y < 0) {
+        if (b.y < 0 || b.x < 0 || b.x > canvas.width) {
           bullets.splice(i, 1);
           continue;
         }
@@ -1227,12 +1340,19 @@
           const bdy = b.y - a.y;
           const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
           if (bdist < b.size + a.size) {
-            score += 20 * powerUpLevel; // Pontos extras baseado no nível
+            destroyedMeteors++;
+            score += 20 * powerUpLevel;
+            ammo = Math.min(maxAmmo[powerUpLevel], ammo + 1);
             bullets.splice(i, 1);
-            createExplosion(a.x, a.y, 12); // Explosão marrom
+            createExplosion(a.x, a.y, 12);
             playSound(explosionSound);
-            vibrate(50); // Vibração no acerto
+            vibrate(50);
             asteroids.splice(j, 1);
+            if (destroyedMeteors % 5 === 0) {
+              shieldCount = Math.min(5, shieldCount + 1);
+              playSound(shieldSound);
+              vibrate(100);
+            }
             break;
           }
         }
@@ -1240,6 +1360,7 @@
 
       for (let i = asteroids.length - 1; i >= 0; i--) {
         let a = asteroids[i];
+        a.x += a.vx * deltaTime;
         a.y += a.speed * deltaTime;
         if (a.y > canvas.height) {
           asteroids.splice(i, 1);
@@ -1249,23 +1370,44 @@
         const dy = a.y - (shipY + shipHeight / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < a.size + shipWidth / 4) {
-          if (shieldCount > 0) {
+          // Regressão do modelo no impacto
+          if (powerUpLevel > 1) {
+            powerUpLevel--;
+            ammo = Math.min(ammo, maxAmmo[powerUpLevel]);
+            playSound(downgradeSound);
+            vibrate(80);
+            downgradeFlash = 30;
+            for (let k = 0; k < 12; k++) {
+              createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ff0000');
+            }
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 6);
+          }
+
+          let hitHandled = false;
+          if (ammo > 0) {
+            ammo--;
+            createParticle(a.x, a.y, true, 'rgba(255, 165, 0, 0.5)');
+            playSound(hitSound);
+            vibrate(50);
+            hitHandled = true;
+          } else if (shieldCount > 0) {
             shieldCount--;
             createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
             playSound(shieldSound);
-            vibrate(100); // Vibração no bloqueio de escudo
-            asteroids.splice(i, 1);
-          } else {
+            vibrate(100);
+            hitHandled = true;
+          }
+          if (!hitHandled) {
             lives--;
-            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explosão no impacto
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15);
             playSound(hitSound);
-            vibrate(200); // Vibração forte no impacto
-            asteroids.splice(i, 1);
+            vibrate(200);
             if (lives <= 0) {
               endGame();
               return;
             }
           }
+          asteroids.splice(i, 1);
         }
       }
 
@@ -1280,11 +1422,19 @@
         const dy = p.y - (shipY + shipHeight / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < p.size + shipWidth / 4) {
-          powerUpLevel = Math.min(3, powerUpLevel + 1);
-          applyPowerUp(p.type);
+          const oldLevel = powerUpLevel;
+          if (p.type === 'weapon') {
+            powerUpLevel = Math.min(4, powerUpLevel + 1);
+            ammo = Math.min(ammo, maxAmmo[powerUpLevel]);
+          } else if (p.type === 'ammo') {
+            ammo = maxAmmo[powerUpLevel];
+            playSound(ammoRegenSound);
+          } else {
+            applyPowerUp(p.type);
+          }
           powerups.splice(i, 1);
           playSound(powerupSound);
-          vibrate(150); // Vibração no power-up
+          vibrate(150);
           for (let k = 0; k < 6; k++) {
             createParticle(p.x, p.y, false);
           }
@@ -1292,22 +1442,25 @@
       }
 
       if (Math.random() < asteroidSpawnRate * deltaTime) {
+        const diagonalIntensity = Math.min(4, score / 500);
+        const vx = (Math.random() - 0.5) * 2 * diagonalIntensity;
         asteroids.push({
           x: Math.random() * canvas.width,
           y: 0,
           size: Math.random() * 20 + 15,
           speed: Math.random() * maxAsteroidSpeed + 3,
+          vx: vx,
           flames: []
         });
       }
 
       if (Math.random() < 0.002 * deltaTime) {
-        const types = ['speed', 'shield', 'life'];
+        const types = ['speed', 'shield', 'life', 'weapon', 'ammo'];
         const type = types[Math.floor(Math.random() * types.length)];
         powerups.push({
           x: Math.random() * canvas.width,
           y: 0,
-          size: 12,
+          size: 18,
           speed: Math.random() * 2 + 1,
           type: type
         });
@@ -1325,11 +1478,9 @@
       }
       ctx.globalAlpha = 1;
 
-      // Draw asteroid flames
       updateAsteroidFlames();
       drawAsteroidFlames();
 
-      // Draw asteroids com emoji 🪨 e chamas
       ctx.shadowColor = 'rgba(139, 69, 19, 0.8)';
       ctx.shadowBlur = 10;
       ctx.font = 'bold 20px Arial, sans-serif';
@@ -1357,20 +1508,61 @@
         ctx.shadowBlur = 0;
       });
 
-      // Draw powerups com ícones bonitos (emojis) e animação radial
+      // Desenhar lasers
+      lasers.forEach(l => {
+        ctx.save();
+        ctx.shadowColor = l.color;
+        ctx.shadowBlur = 15;
+        ctx.strokeStyle = l.color;
+        ctx.lineWidth = l.height;
+        ctx.globalAlpha = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+        ctx.lineTo(l.x + l.width, l.y);
+        ctx.stroke();
+        ctx.restore();
+      });
+
       for (let p of powerups) {
         const pulseSize = p.size + Math.sin(Date.now() / 200) * 2;
-        ctx.shadowColor = p.type === 'speed' ? '#00ffff' : p.type === 'shield' ? '#00ff00' : '#8000ff';
+        let shadowColor, fillColor, icon;
+        switch (p.type) {
+          case 'speed':
+            shadowColor = '#00ffff';
+            fillColor = 'rgba(0, 255, 255, 0.9)';
+            icon = '🚀';
+            break;
+          case 'shield':
+            shadowColor = '#00ff00';
+            fillColor = 'rgba(0, 255, 0, 0.9)';
+            icon = '🛡️';
+            break;
+          case 'life':
+            shadowColor = '#ff0000';
+            fillColor = 'rgba(255, 0, 0, 0.9)';
+            icon = '❤️';
+            break;
+          case 'weapon':
+            shadowColor = '#ffff00';
+            fillColor = 'rgba(255, 255, 0, 0.9)';
+            icon = '🔫';
+            break;
+          case 'ammo':
+            shadowColor = '#00ff00';
+            fillColor = 'rgba(0, 255, 0, 0.9)';
+            icon = '🔋';
+            break;
+        }
+        ctx.shadowColor = shadowColor;
         ctx.shadowBlur = 12;
-        ctx.fillStyle = p.type === 'speed' ? 'rgba(0, 255, 255, 0.9)' : p.type === 'shield' ? 'rgba(0, 255, 0, 0.9)' : 'rgba(128, 0, 255, 0.9)';
+        ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.font = `${Math.min(16, canvas.width / 60)}px Arial, sans-serif`;
+        ctx.font = `${Math.min(20, canvas.width / 50)}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const icon = p.type === 'speed' ? '🚀' : p.type === 'shield' ? '🛡️' : '❤️';
         ctx.fillText(icon, p.x, p.y);
       }
       ctx.textAlign = 'left';
@@ -1382,30 +1574,26 @@
       updateExplosionParticles();
       drawExplosionParticles();
 
-      // Partículas de exaustão como na intro (sempre ativas durante o jogo, igual à animação inicial)
       const exhaustX = shipX + shipWidth / 2;
       const exhaustY = shipY + shipHeight;
-      // Sempre criar partículas para simular thrust constante, mais visível
-      for (let i = 0; i < 5; i++) { // Aumentado para 5 para mais visibilidade
+      for (let i = 0; i < 5; i++) {
         createParticle(exhaustX, exhaustY - 5);
       }
-      for (let i = 0; i < 1; i++) { // Diminuído para 1 para menos fumaça
+      for (let i = 0; i < 1; i++) {
         createParticle(exhaustX, exhaustY - 5, true);
       }
 
-      // Atualizar partículas
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e visíveis
-        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para partículas maiores por mais tempo
+        p.alpha -= p.decay * 0.8;
+        p.size *= p.isSmoke ? 0.99 : 0.96;
         p.vy += 0.1;
         p.rotation += p.isSmoke ? 0.05 : 0.1;
         if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
       }
 
-      // Desenhar partículas
       particles.forEach(p => {
         ctx.save();
         ctx.translate(p.x, p.y);
@@ -1413,9 +1601,9 @@
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8; // Aumentado blur para mais glow
+        ctx.shadowBlur = 8;
         ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        if (!p.isSmoke && Math.random() < 0.3) { // Aumentada chance de brilho
+        if (!p.isSmoke && Math.random() < 0.3) {
           ctx.fillStyle = 'white';
           ctx.globalAlpha = p.alpha * 0.8;
           ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
@@ -1425,20 +1613,20 @@
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
 
-      // Posicionar rastro abaixo da nave
       rastro.style.left = `${exhaustX - 50}px`;
       rastro.style.top = `${exhaustY}px`;
       rastroCore.style.left = `${exhaustX - 10}px`;
       rastroCore.style.top = `${exhaustY}px`;
 
-      // Cores do escudo baseadas na quantidade
       let shieldColor = 'rgba(21, 94, 183, 1)';
       if (shieldCount === 1) {
-        shieldColor = 'rgba(0, 255, 0, 1)'; // Verde
+        shieldColor = 'rgba(0, 255, 0, 1)';
       } else if (shieldCount === 2) {
-        shieldColor = 'rgba(128, 0, 128, 1)'; // Roxo
+        shieldColor = 'rgba(128, 0, 128, 1)';
       } else if (shieldCount === 3) {
-        shieldColor = 'rgba(0, 0, 255, 1)'; // Azul
+        shieldColor = 'rgba(0, 0, 255, 1)';
+      } else if (shieldCount >= 4) {
+        shieldColor = 'rgba(255, 255, 0, 1)';
       }
       ctx.shadowColor = shieldActive ? shieldColor : 'rgba(21, 94, 183, 1)';
       ctx.shadowBlur = shieldActive ? 30 : 20;
@@ -1446,6 +1634,12 @@
         ctx.drawImage(shipImg, shipX, shipY, shipWidth, shipHeight);
       }
       ctx.shadowBlur = 0;
+
+      if (downgradeFlash > 0) {
+        const flashAlpha = (downgradeFlash / 30) * 0.4;
+        ctx.fillStyle = `rgba(255, 0, 0, ${flashAlpha})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
       const uiScale = window.innerWidth > 768 ? 1 : 0.8;
       ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
@@ -1455,8 +1649,9 @@
       ctx.textAlign = 'left';
       ctx.fillText(`PONTOS: ${score}`, 20, 40);
       ctx.fillText(`VIDAS: ${'❤️'.repeat(lives)}`, 20, 70);
-      ctx.fillText(`PODERES: ${powerUpLevel}`, 20, 100);
-      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 130);
+      ctx.fillText(`TIROS: ${ammo}/${maxAmmo[powerUpLevel]}`, 20, 100);
+      ctx.fillText(`MODELO: ${powerUpLevel}`, 20, 130);
+      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 160);
       ctx.shadowBlur = 0;
       ctx.textAlign = 'left';
 
@@ -1468,11 +1663,13 @@
       if (type === 'speed') {
         speedBoostEndTime = currentTime + 5000;
       } else if (type === 'shield') {
-        shieldCount = Math.min(3, shieldCount + 1);
-        shieldEndTime = currentTime + 5000;
-        shieldActive = true;
+        shieldCount = Math.min(5, shieldCount + 1);
       } else if (type === 'life') {
-        lives = Math.min(5, lives + 1); // Máximo 5 vidas
+        lives = Math.min(5, lives + 1);
+        if (lives % 5 === 0) {
+          shieldCount = Math.min(5, shieldCount + 1);
+          playSound(shieldSound);
+        }
       }
     }
 
@@ -1484,32 +1681,45 @@
       isThrusting = false;
       rafIdStars = requestAnimationFrame(drawStars);
       rafIdParticles = requestAnimationFrame(updateParticles);
-      logo.style.opacity = '1';
       if (!forceResume) {
-        // Exibir score primeiro com animação
-        gameOverOverlay.style.display = 'flex';
-        gameOverOverlay.style.opacity = '0';
-        setTimeout(() => {
-          gameOverOverlay.style.opacity = '1';
-          gameOverOverlay.classList.add('show');
-          const scoreEl = gameOverOverlay.querySelector('.score');
-          scoreEl.style.opacity = '0';
-          scoreEl.style.transform = 'scale(0.5)';
-          scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
-          scoreEl.textContent = score;
-          setTimeout(() => {
-            scoreEl.style.opacity = '1';
-            scoreEl.style.transform = 'scale(1)';
-          }, 100);
-        }, 300);
+        // Animação do logo sobrevoando a tela
+        logo.style.opacity = '1';
+        logo.style.position = 'relative';
+        logo.style.zIndex = '15';
+        logo.style.animation = 'logoFlyover 4s ease-in-out forwards';
 
-        // Após exibir score, animação para o Ranking TOP 5
+        // Após a animação do logo (4s), mostrar overlay
         setTimeout(() => {
-          fetchTop5(score);
-        }, 2000);
+          gameOverOverlay.style.display = 'flex';
+          gameOverOverlay.style.opacity = '0';
+          setTimeout(() => {
+            gameOverOverlay.style.opacity = '1';
+            gameOverOverlay.classList.add('show');
+            const scoreEl = gameOverOverlay.querySelector('.score');
+            scoreEl.style.opacity = '0';
+            scoreEl.style.transform = 'scale(0.5)';
+            scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
+            scoreEl.textContent = score;
+            setTimeout(() => {
+              scoreEl.style.opacity = '1';
+              scoreEl.style.transform = 'scale(1)';
+            }, 100);
+          }, 300);
+
+          // Após exibir score, animação para o Ranking TOP 5
+          setTimeout(() => {
+            fetchTop5(score);
+          }, 2000);
+        }, 4000); // 4s para a animação do logo
       } else {
+        logo.style.opacity = '1';
+        logo.style.animation = 'none';
+        logo.style.position = 'relative';
+        logo.style.left = 'auto';
+        logo.style.top = 'auto';
+        logo.style.zIndex = '5';
         gameOverOverlay.style.display = 'none';
-        buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo após game over
+        buttonContainer.style.display = 'flex';
         buttonContainer.style.opacity = '1';
       }
     }
@@ -1518,7 +1728,7 @@
       gameOverOverlay.style.display = 'none';
       gameOverOverlay.classList.remove('show');
       document.getElementById('nameInput').style.display = 'none';
-      document.getElementById('nameInput').innerHTML = ''; // Limpa o conteúdo ao reiniciar
+      document.getElementById('nameInput').innerHTML = '';
       document.getElementById('top5').classList.remove('animate-ranking');
       startGame();
     }
@@ -1578,7 +1788,6 @@
     function updateShipPos(tx, ty) {
       shipX = Math.max(0, Math.min(canvas.width - shipWidth, tx - shipWidth / 2));
       shipY = Math.max(0, Math.min(canvas.height - shipHeight, ty - shipHeight / 2));
-      // Atualizar rastro durante toque
       const exhaustX = shipX + shipWidth / 2;
       const exhaustY = shipY + shipHeight;
       rastro.style.left = `${exhaustX - 50}px`;
