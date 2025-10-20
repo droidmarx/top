@@ -456,9 +456,10 @@
       background: linear-gradient(to top, rgba(255, 230, 100, 0), rgba(0, 139, 255, 0.8), rgba(255, 50, 50, 1));
       border-radius: 100px 100px 50px 50px;
       filter: blur(120px);
-      z-index: 4;
-      opacity: 0.9;
+      z-index: 6;
+      opacity: 1;
       animation: pulsoRastro 1s ease-in-out infinite;
+      pointer-events: none;
     }
 
     .rastro-core {
@@ -468,9 +469,10 @@
       background: linear-gradient(to top, rgba(50, 194, 255, 0.79), rgba(255, 4, 4, 1));
       border-radius: 40px;
       filter: blur(40px);
-      z-index: 4;
-      opacity: 0.95;
+      z-index: 6;
+      opacity: 1;
       animation: pulsoRastroCore 0.5s ease-in-out infinite;
+      pointer-events: none;
     }
 
     @keyframes entradaLogo {
@@ -565,7 +567,14 @@
     <button onclick="triggerExitSequence()">Avaliar Serviço</button>
   </div>
 
-  <audio id="ambientSound" src="/click-sound.mp3" autoplay loop volume="0.3"></audio>
+  <!-- Sons de fundo e efeitos -->
+  <audio id="ambientSound" src="ambient.mp3" loop volume="0.3"></audio>
+  <audio id="shootSound" src="shoot.mp3" preload="auto"></audio>
+  <audio id="explosionSound" src="explosion.mp3" preload="auto"></audio>
+  <audio id="powerupSound" src="powerup.mp3" preload="auto"></audio>
+  <audio id="shieldSound" src="shield.mp3" preload="auto"></audio>
+  <audio id="hitSound" src="hit.mp3" preload="auto"></audio>
+  <audio id="thrustSound" src="thrust.mp3" loop preload="auto"></audio>
 
   <script>
     const canvas = document.getElementById('spaceCanvas');
@@ -586,7 +595,7 @@
     shipImg.src = 'logo.png';
     let shipX, shipY, shipWidth = 120, shipHeight = 120;
     let score = 0;
-    let lives = 3;
+    let lives = 5;
     let gameStartTime;
     let keys = {};
     let asteroids = [];
@@ -599,6 +608,7 @@
     let baseSpeed = 4;
     let currentSpeed = baseSpeed;
     let shieldActive = false;
+    let shieldCount = 0;
     let shieldEndTime = 0;
     let speedBoostEndTime = 0;
     let touchActive = false;
@@ -607,8 +617,26 @@
     let asteroidSpawnRate = 0.03;
     let maxAsteroidSpeed = 6;
     let lastDifficultyIncrease = 0;
+    let isThrusting = false;
+    let wasMoving = false;
 
     const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
+
+    // Sons
+    const ambientSound = document.getElementById('ambientSound');
+    const shootSound = document.getElementById('shootSound');
+    const explosionSound = document.getElementById('explosionSound');
+    const powerupSound = document.getElementById('powerupSound');
+    const shieldSound = document.getElementById('shieldSound');
+    const hitSound = document.getElementById('hitSound');
+    const thrustSound = document.getElementById('thrustSound');
+
+    // Função para tocar som
+    function playSound(sound) {
+      sound.currentTime = 0;
+      sound.volume = 0.5; // Volume padrão para efeitos
+      sound.play().catch(e => console.log('Erro ao tocar som:', e));
+    }
 
     // Cores para o rastro baseadas no powerUpLevel
     const trailColors = {
@@ -811,10 +839,10 @@
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
 
-      rastro.style.left = `${rect.left + rect.width / 2 - 25}px`;
-      rastro.style.top = `${rect.bottom - 10}px`;
+      rastro.style.left = `${rect.left + rect.width / 2 - 50}px`;
+      rastro.style.top = `${rect.bottom}px`;
       rastroCore.style.left = `${rect.left + rect.width / 2 - 10}px`;
-      rastroCore.style.top = `${rect.bottom - 5}px`;
+      rastroCore.style.top = `${rect.bottom}px`;
 
       rafIdParticles = requestAnimationFrame(updateParticles);
     }
@@ -1056,6 +1084,7 @@
         }
       }
 
+      playSound(shootSound);
       vibrate(30 + powerUpLevel * 10); // Vibração maior com nível mais alto
     }
 
@@ -1068,8 +1097,6 @@
       logo.style.opacity = '0';
       document.querySelector('#text1').style.display = 'none';
       document.querySelector('#text2').style.display = 'none';
-      rastro.style.opacity = '1';
-      rastroCore.style.opacity = '0';
       flare.style.opacity = '0';
       cancelAnimationFrame(rafIdStars);
       cancelAnimationFrame(rafIdParticles);
@@ -1080,7 +1107,8 @@
       shipX = (canvas.width - shipWidth) / 2;
       shipY = canvas.height - shipHeight - 50;
       score = 0;
-      lives = 3;
+      lives = 5;
+      shieldCount = 0;
       asteroids = [];
       powerups = [];
       bullets = [];
@@ -1094,7 +1122,11 @@
       currentSpeed = baseSpeed;
       shieldActive = false;
       speedBoostEndTime = 0;
+      isThrusting = false;
+      wasMoving = false;
       lastTime = performance.now();
+      // Iniciar som ambiente
+      ambientSound.play().catch(e => console.log('Erro ao tocar som ambiente:', e));
       gameLoop(lastTime);
     }
 
@@ -1116,7 +1148,12 @@
 
       if (Date.now() > speedBoostEndTime) currentSpeed = baseSpeed;
       else currentSpeed = baseSpeed * 1.5;
-      if (Date.now() > shieldEndTime) shieldActive = false;
+      if (Date.now() > shieldEndTime) {
+        shieldCount = 0;
+        shieldActive = false;
+      } else {
+        shieldActive = shieldCount > 0;
+      }
 
       let moving = false;
       const speed = currentSpeed * deltaTime * (window.innerWidth > 768 ? 1 : 0.8);
@@ -1137,9 +1174,24 @@
         moving = true;
       }
 
-      if (moving && Math.random() < 0.6) {
-        createThrustParticle(shipX + shipWidth / 2, shipY + shipHeight);
+      // Gerenciar som de thrust
+      if (moving) {
+        if (!isThrusting) {
+          thrustSound.volume = 0.3;
+          thrustSound.play().catch(e => console.log('Erro ao tocar thrust:', e));
+          isThrusting = true;
+        }
+        if (!wasMoving && Math.random() < 0.6) {
+          createThrustParticle(shipX + shipWidth / 2, shipY);
+        }
+      } else {
+        if (isThrusting) {
+          thrustSound.pause();
+          thrustSound.currentTime = 0;
+          isThrusting = false;
+        }
       }
+      wasMoving = moving;
 
       // Atirar baseado no powerUpLevel
       if (keys[' '] && powerUpLevel > 0) {
@@ -1178,6 +1230,7 @@
             score += 20 * powerUpLevel; // Pontos extras baseado no nível
             bullets.splice(i, 1);
             createExplosion(a.x, a.y, 12); // Explosão marrom
+            playSound(explosionSound);
             vibrate(50); // Vibração no acerto
             asteroids.splice(j, 1);
             break;
@@ -1195,19 +1248,24 @@
         const dx = a.x - (shipX + shipWidth / 2);
         const dy = a.y - (shipY + shipHeight / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < a.size + shipWidth / 4 && !shieldActive) {
-          lives--;
-          createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explosão no impacto
-          vibrate(200); // Vibração forte no impacto
-          asteroids.splice(i, 1);
-          if (lives <= 0) {
-            endGame();
-            return;
+        if (dist < a.size + shipWidth / 4) {
+          if (shieldCount > 0) {
+            shieldCount--;
+            createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
+            playSound(shieldSound);
+            vibrate(100); // Vibração no bloqueio de escudo
+            asteroids.splice(i, 1);
+          } else {
+            lives--;
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explosão no impacto
+            playSound(hitSound);
+            vibrate(200); // Vibração forte no impacto
+            asteroids.splice(i, 1);
+            if (lives <= 0) {
+              endGame();
+              return;
+            }
           }
-        } else if (dist < a.size + shipWidth / 4 && shieldActive) {
-          asteroids.splice(i, 1);
-          createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
-          vibrate(100); // Vibração no bloqueio de escudo
         }
       }
 
@@ -1225,6 +1283,7 @@
           powerUpLevel = Math.min(3, powerUpLevel + 1);
           applyPowerUp(p.type);
           powerups.splice(i, 1);
+          playSound(powerupSound);
           vibrate(150); // Vibração no power-up
           for (let k = 0; k < 6; k++) {
             createParticle(p.x, p.y, false);
@@ -1242,7 +1301,7 @@
         });
       }
 
-      if (Math.random() < 0.005 * deltaTime) {
+      if (Math.random() < 0.002 * deltaTime) {
         const types = ['speed', 'shield', 'life'];
         const type = types[Math.floor(Math.random() * types.length)];
         powerups.push({
@@ -1323,7 +1382,65 @@
       updateExplosionParticles();
       drawExplosionParticles();
 
-      ctx.shadowColor = shieldActive ? 'rgba(0, 255, 0, 1)' : 'rgba(21, 94, 183, 1)';
+      // Partículas de exaustão como na intro (sempre ativas durante o jogo, igual à animação inicial)
+      const exhaustX = shipX + shipWidth / 2;
+      const exhaustY = shipY + shipHeight;
+      // Sempre criar partículas para simular thrust constante, mais visível
+      for (let i = 0; i < 5; i++) { // Aumentado para 5 para mais visibilidade
+        createParticle(exhaustX, exhaustY - 5);
+      }
+      for (let i = 0; i < 1; i++) { // Diminuído para 1 para menos fumaça
+        createParticle(exhaustX, exhaustY - 5, true);
+      }
+
+      // Atualizar partículas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e visíveis
+        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para partículas maiores por mais tempo
+        p.vy += 0.1;
+        p.rotation += p.isSmoke ? 0.05 : 0.1;
+        if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
+      }
+
+      // Desenhar partículas
+      particles.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 8; // Aumentado blur para mais glow
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        if (!p.isSmoke && Math.random() < 0.3) { // Aumentada chance de brilho
+          ctx.fillStyle = 'white';
+          ctx.globalAlpha = p.alpha * 0.8;
+          ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
+        }
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      // Posicionar rastro abaixo da nave
+      rastro.style.left = `${exhaustX - 50}px`;
+      rastro.style.top = `${exhaustY}px`;
+      rastroCore.style.left = `${exhaustX - 10}px`;
+      rastroCore.style.top = `${exhaustY}px`;
+
+      // Cores do escudo baseadas na quantidade
+      let shieldColor = 'rgba(21, 94, 183, 1)';
+      if (shieldCount === 1) {
+        shieldColor = 'rgba(0, 255, 0, 1)'; // Verde
+      } else if (shieldCount === 2) {
+        shieldColor = 'rgba(128, 0, 128, 1)'; // Roxo
+      } else if (shieldCount === 3) {
+        shieldColor = 'rgba(0, 0, 255, 1)'; // Azul
+      }
+      ctx.shadowColor = shieldActive ? shieldColor : 'rgba(21, 94, 183, 1)';
       ctx.shadowBlur = shieldActive ? 30 : 20;
       if (shipImg.complete) {
         ctx.drawImage(shipImg, shipX, shipY, shipWidth, shipHeight);
@@ -1339,9 +1456,7 @@
       ctx.fillText(`PONTOS: ${score}`, 20, 40);
       ctx.fillText(`VIDAS: ${'❤️'.repeat(lives)}`, 20, 70);
       ctx.fillText(`PODERES: ${powerUpLevel}`, 20, 100);
-      if (shieldActive) {
-        ctx.fillText('🛡️', 20, 130);
-      }
+      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 130);
       ctx.shadowBlur = 0;
       ctx.textAlign = 'left';
 
@@ -1353,21 +1468,23 @@
       if (type === 'speed') {
         speedBoostEndTime = currentTime + 5000;
       } else if (type === 'shield') {
+        shieldCount = Math.min(3, shieldCount + 1);
         shieldEndTime = currentTime + 5000;
         shieldActive = true;
       } else if (type === 'life') {
-        lives = Math.min(10, lives + 1); // Máximo 10 vidas
+        lives = Math.min(5, lives + 1); // Máximo 5 vidas
       }
     }
 
     function endGame(forceResume = false) {
       gameActive = false;
       cancelAnimationFrame(rafIdGame);
+      thrustSound.pause();
+      thrustSound.currentTime = 0;
+      isThrusting = false;
       rafIdStars = requestAnimationFrame(drawStars);
       rafIdParticles = requestAnimationFrame(updateParticles);
       logo.style.opacity = '1';
-      rastro.style.opacity = '0.9';
-      rastroCore.style.opacity = '0.95';
       if (!forceResume) {
         // Exibir score primeiro com animação
         gameOverOverlay.style.display = 'flex';
@@ -1408,6 +1525,8 @@
 
     function exitGame() {
       endGame(true);
+      ambientSound.pause();
+      ambientSound.currentTime = 0;
     }
 
     document.addEventListener('keydown', (e) => {
@@ -1459,6 +1578,13 @@
     function updateShipPos(tx, ty) {
       shipX = Math.max(0, Math.min(canvas.width - shipWidth, tx - shipWidth / 2));
       shipY = Math.max(0, Math.min(canvas.height - shipHeight, ty - shipHeight / 2));
+      // Atualizar rastro durante toque
+      const exhaustX = shipX + shipWidth / 2;
+      const exhaustY = shipY + shipHeight;
+      rastro.style.left = `${exhaustX - 50}px`;
+      rastro.style.top = `${exhaustY}px`;
+      rastroCore.style.left = `${exhaustX - 10}px`;
+      rastroCore.style.top = `${exhaustY}px`;
     }
 
     document.addEventListener('dblclick', (e) => {
