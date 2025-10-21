@@ -576,8 +576,8 @@
   <p id="text1">Avalie nosso serviço</p>
   <p id="text2">Obrigado!</p>
   <div class="button-container">
-    <button id="playButton" onclick="startGame()">Jogar</button>
     <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar Agora</button>
+    <button id="playButton" onclick="startGame()">Jogar</button>
   </div>
   <div class="overlay" id="overlay"></div>
   <div id="gameOverOverlay">
@@ -1837,11 +1837,8 @@
       }, 2500);
 
       setTimeout(() => {
-        window.open(
-          'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM',
-          '_blank'
-        );
-      }, 4000);
+  window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';
+}, 1700);
     }
 
     setTimeout(() => {
