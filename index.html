@@ -31,6 +31,16 @@
       transition: transform 8s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
+    #snowCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 102;
+      pointer-events: none;
+    }
+
     .nebula {
       position: fixed;
       top: 0;
@@ -65,7 +75,7 @@
       width: 150px;
       transform: translateY(100vh) scale(0.7);
       animation: entradaLogo 3.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-      filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1)) brightness(1.5) saturate(2.0) contrast(1.2);
+      filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1)) brightness(1.1) saturate(1.1) contrast(1.2);
       z-index: 5;
       position: relative;
       cursor: pointer; /* Adicionado para indicar que o logo é clicável */
@@ -134,8 +144,8 @@
 
     /* Estilo específico para o botão de gorjeta - mais simples e acolhedor */
     #tipButton {
-      background: linear-gradient(45deg, #ffc107, #ff9800);
-      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+      background: linear-gradient(45deg, #FF0707, #D3CDC5);
+      box-shadow: 0 4px 15px rgba(40, 36, 36, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -508,8 +518,8 @@
       pointer-events: none;
     }
 
-    /* Estilos para o Modal de Técnicos (scroll lateral) */
-    .technicians-modal {
+    /* Estilos para o Modal de Valores (scroll lateral) */
+    .amount-modal {
       display: none;
       position: fixed;
       z-index: 30;
@@ -523,7 +533,7 @@
       animation: fadeIn 0.3s ease-out;
     }
 
-    .technicians-modal-content {
+    .amount-modal-content {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
       margin: 10% auto;
       padding: 30px;
@@ -561,7 +571,7 @@
       transform: scale(1.1);
     }
 
-    .technicians-modal h2 {
+    .amount-modal h2 {
       text-align: center;
       margin-bottom: 10px;
       font-size: 1.8rem;
@@ -570,14 +580,14 @@
       letter-spacing: 1px;
     }
 
-    .technicians-modal p {
+    .amount-modal p {
       text-align: center;
       color: #ccc;
       margin-bottom: 20px;
       font-size: 1.1rem;
     }
 
-    .pix-buttons {
+    .amount-buttons {
       display: flex;
       flex-direction: row;
       overflow-x: auto;
@@ -590,25 +600,25 @@
       scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     }
 
-    .pix-buttons::-webkit-scrollbar {
+    .amount-buttons::-webkit-scrollbar {
       height: 6px;
     }
 
-    .pix-buttons::-webkit-scrollbar-track {
+    .amount-buttons::-webkit-scrollbar-track {
       background: rgba(0, 0, 0, 0.5);
       border-radius: 3px;
     }
 
-    .pix-buttons::-webkit-scrollbar-thumb {
+    .amount-buttons::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.3);
       border-radius: 3px;
     }
 
-    .pix-buttons::-webkit-scrollbar-thumb:hover {
+    .amount-buttons::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.5);
     }
 
-    .pix-button {
+    .amount-button {
       background: linear-gradient(45deg, #28a745, #20c997);
       box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
       display: flex;
@@ -628,47 +638,10 @@
       transition: all 0.3s ease;
     }
 
-    .pix-button:hover,
-    .pix-button.selected {
+    .amount-button:hover {
       box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
       transform: translateY(-2px) scale(1.05);
       background: linear-gradient(45deg, #20c997, #28a745);
-    }
-
-    .selected-key {
-      margin-top: 20px;
-      width: 100%;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    .selected-key.show {
-      display: flex;
-    }
-
-    .pix-key-display {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 1rem;
-      color: #00ff00;
-      word-break: break-all;
-      text-align: center;
-      border: 1px solid rgba(0, 255, 0, 0.3);
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .gratitude-message {
-      font-style: italic;
-      color: #ffd700;
-      text-align: center;
-      margin-top: 5px;
-      font-size: 0.9rem;
     }
 
     /* Container para a notificação com logo voando */
@@ -706,30 +679,31 @@
       opacity: 1;
     }
 
-    /* Logo voando na notificação - posicionado mais acima */
-    .notification-logo {
-      position: absolute;
-      top: 25%; /* Posicionado mais acima da mensagem (que está em ~50%) */
-      left: 50%;
-      transform: translateX(-50%) translateY(100vh) scale(0.7);
-      width: 150px;
-      filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1)) brightness(1.5) saturate(2.0) contrast(1.2);
-      z-index: 101;
-      opacity: 0;
-    }
+/* Logo voando na notificação - posicionado no topo */
+.notification-logo {
+  position: absolute;
+  top: 0; /* Alterado para encostar no topo da tela */
+  left: 50%;
+  transform: translateX(-50%) translateY(-150vh) scale(0.5); /* Início acima da tela para "queda" */
+  width: min(50vw, 1024px); /* 50% da largura da viewport, máximo 1024px */
+  height: auto; /* Manter proporção */
+  filter: drop-shadow(0 0 30px rgba(183, 21, 21, 1));
+  z-index: 101;
+  opacity: 0;
+}
 
-    /* Animação ajustada para o logo na notificação */
+    /* Animação ajustada para o logo caindo com quique no topo */
     @keyframes notificationLogoEntrance {
       0% { 
-        transform: translateX(-50%) translateY(100vh) scale(0.7); 
+        transform: translateX(-50%) translateY(-150vh) scale(0.5); 
         opacity: 0; 
       }
-      40% { 
-        transform: translateX(-50%) translateY(30px) scale(1.3); 
+      70% { 
+        transform: translateX(-50%) translateY(30px) scale(1.1); 
         opacity: 1; 
       }
-      60% { 
-        transform: translateX(-50%) translateY(-20px) scale(0.95); 
+      85% { 
+        transform: translateX(-50%) translateY(-10px) scale(0.95); 
       }
       100% { 
         transform: translateX(-50%) translateY(0) scale(1); 
@@ -740,15 +714,15 @@
       animation: notificationLogoEntrance 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
     }
 
-    /* Mensagem da notificação - centralizada abaixo do logo */
+    /* Mensagem da notificação - centralizada abaixo do logo - DIV MAIOR */
     .notification-message {
       position: absolute;
-      top: 55%; /* Abaixo do logo (que termina em 25% + altura) */
+      top: 30%; /* Ajustado para ficar abaixo do logo no topo (considerando altura da imagem ~150px) */
       left: 50%;
       transform: translate(-50%, -50%);
       background: linear-gradient(45deg, #28a745, #20c997);
       color: white;
-      padding: 20px 30px;
+      padding: 25px 40px; /* Padding aumentado para div maior */
       border-radius: 25px;
       box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
       opacity: 0;
@@ -756,7 +730,8 @@
       transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
       text-align: center;
       font-weight: 600;
-      max-width: 80%;
+      font-size: 1.1rem; /* Fonte ligeiramente maior */
+      max-width: 85%; /* Largura máxima aumentada */
       z-index: 102;
     }
 
@@ -788,37 +763,33 @@
     }
 
     @media (max-width: 768px) {
-      .technicians-modal-content {
+      .amount-modal-content {
         width: 85%; /* Reduzido de 95% para 85% em mobile para menor largura */
         margin: 10% auto;
         padding: 20px;
       }
 
-      .pix-buttons {
+      .amount-buttons {
         gap: 8px;
         padding: 5px 0;
       }
 
-      .pix-button {
+      .amount-button {
         font-size: 1.3rem;
         padding: 12px 20px;
         min-width: 160px;
       }
 
-      .pix-key-display {
-        font-size: 0.9rem;
-      }
-
       .notification-message {
-        padding: 15px 20px;
+        padding: 20px 30px; /* Padding maior em mobile também */
         max-width: 90%;
-        font-size: 0.9rem;
-        top: 60%; /* Ajuste para mobile */
+        font-size: 1rem; /* Fonte ajustada para mobile */
+        top: 35%; /* Ajuste para mobile, logo em top:0 */
       }
 
       .notification-logo {
-        top: 20%; /* Ajuste para mobile */
-        width: 120px;
+        top: 0; /* Mantido no topo em mobile */
+        /* width já é responsivo com min(50vw, 1024px) */
       }
 
       .notification-container.show ~ canvas {
@@ -905,7 +876,7 @@
   <p id="text2">Obrigado!</p>
   <div class="button-container">
         <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar Agora</button>
-    <button id="tipButton" onclick="openTechniciansModal()">Caixa de natal🎅🏽</button>
+    <button id="tipButton" onclick="openAmountModal()">Caixa de natal 🎁</button>
 
   </div>
   <div class="overlay" id="overlay"></div>
@@ -919,28 +890,28 @@
     <button onclick="triggerExitSequence()">Avaliar Serviço</button>
   </div>
 
-  <!-- Modal para Técnicos (agora com scroll horizontal de botões e revelação da chave ao clicar) -->
-  <div id="techniciansModal" class="technicians-modal">
-    <div class="technicians-modal-content">
-      <span class="close" onclick="closeTechniciansModal()">&times;</span>
-      <h2>Envie uma gorjeta ao técnico</h2>
-      <p>Deslize para o lado e selecione o técnico para revelar sua chave PIX e copiá-la automaticamente!</p>
-      <div class="pix-buttons" id="pixButtons">
+  <!-- Modal para Valores da Caixa de Natal -->
+  <div id="amountModal" class="amount-modal">
+    <div class="amount-modal-content">
+      <span class="close" onclick="closeAmountModal()">&times;</span>
+      <h2>Caixa de Natal 🎅</h2>
+      <p>Selecione o valor da sua gorjeta de Natal</p>
+      <div class="amount-buttons" id="amountButtons">
         <!-- Botões gerados dinamicamente no JS -->
-      </div>
-      <div class="selected-key" id="selectedKey">
-        <div class="pix-key-display" id="revealedKey"></div>
-        <p class="gratitude-message">Faça a transferência de qualquer valor como gesto de gratidão!</p>
       </div>
     </div>
   </div>
 
+
+
   <!-- Container da Notificação com Logo Voando e Fundo Borrado -->
   <div id="notificationContainer" class="notification-container">
     <div class="notification-backdrop" id="notificationBackdrop"></div>
-    <img id="notificationLogo" class="notification-logo" src="logo.png" alt="Logo IndaiaFibra">
+    <canvas id="snowCanvas"></canvas>
+    <img id="notificationLogo" class="notification-logo" src="/papainoel.png" alt="Logo IndaiaFibra">
     <div id="notificationMessage" class="notification-message">
-      Muito obrigado por confiar no meu trabalho! <br><small>Chave PIX do <span id="copiedTech"></span> foi copiada!</small>
+      Muito obrigado! <br><br><small>Código PIX de R$ <span id="copiedTech"></span> para a Caixa de Natal foi copiado!</small><br><br>
+      <span>Abra seu aplicativo do banco</span>
     </div>
   </div>
 
@@ -952,10 +923,13 @@
   <audio id="shieldSound" src="shield.mp3" preload="auto"></audio>
   <audio id="hitSound" src="hit.mp3" preload="auto"></audio>
   <audio id="thrustSound" src="thrust.mp3" loop preload="auto"></audio>
+  <audio id="winterSound" src="winter.mp3" loop volume="0.4" preload="auto"></audio>
 
   <script>
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
+    const snowCanvas = document.getElementById('snowCanvas');
+    const snowCtx = snowCanvas.getContext('2d');
     const logo = document.getElementById('logo');
     const rastro = document.getElementById('rastro');
     const rastroCore = document.getElementById('rastroCore');
@@ -963,19 +937,21 @@
     const overlay = document.getElementById('overlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const buttonContainer = document.querySelector('.button-container');
-    const techniciansModal = document.getElementById('techniciansModal');
+    const amountModal = document.getElementById('amountModal');
     const notificationContainer = document.getElementById('notificationContainer');
     const notificationBackdrop = document.getElementById('notificationBackdrop');
     const notificationLogo = document.getElementById('notificationLogo');
     const notificationMessage = document.getElementById('notificationMessage');
     const copiedTech = document.getElementById('copiedTech');
-    const pixButtons = document.getElementById('pixButtons');
-    const selectedKey = document.getElementById('selectedKey');
-    const revealedKey = document.getElementById('revealedKey');
+    const amountButtons = document.getElementById('amountButtons');
     const pageStartTime = Date.now();
-    let rafIdStars, rafIdParticles, rafIdGame;
+    let rafIdStars, rafIdParticles, rafIdGame, rafIdSnow;
     let hyperdriveActive = false;
     let gameActive = false;
+    let snowActive = false; // Flag para ativar animação de neve
+    let snowExiting = false; // Flag para animação de saída da neve
+    let snowExitStartTime = 0; // Tempo de início da saída
+    let snowExitDuration = 1000; // Duração da animação de saída em ms
     let lastTime = 0;
     const shipImg = new Image();
     shipImg.src = 'logo.png';
@@ -1006,18 +982,21 @@
     let isThrusting = false;
     let wasMoving = false;
 
+    // Snowflakes array for animation
+    let snowflakes = [];
+
     const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
 
-    // Dados dos técnicos (chaves PIX hardcoded)
-    const technicians = [
-      { name: 'Guilherme', key: '39892797850', emoji: '👷🏽‍♂️' },
-      { name: 'Sérgio', key: '19992681056', emoji: '👷🏽‍♂️' },
-      { name: 'André', key: '28087258843', emoji: '👷🏽‍♂️' },
-      { name: 'Washington', key: 'PIX-CHAVE-WASHINGTON', emoji: '👷🏽‍♂️' },
-      { name: 'Robson', key: 'PIX-CHAVE-ROBSON', emoji: '👷🏽‍♂️' },
-      { name: 'Elvis', key: 'PIX-CHAVE-ELVIS', emoji: '👷🏽‍♂️' },
-      { name: 'Janderson', key: 'PIX-CHAVE-JANDERSON', emoji: '👷🏽‍♂️' }
-    ];
+    // Códigos PIX hardcoded para os valores específicos da Caixa de Natal
+    const pixCodes = {
+      10: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540510.005802BR5925Guilherme Marques dos San6009SAO PAULO621405109vkjhqw5AY6304A388',
+      25: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540525.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510fcWF8gmhd16304BB83',
+      50: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540550.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510WOF4dePBxT63040A9F',
+      100: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço5204000053039865406100.005802BR5925Guilherme Marques dos San6009SAO PAULO621405104H5w4QAno16304981F'
+    };
+
+    // Valores pré-definidos para Caixa de Natal
+    const amounts = [10, 25, 50, 100];
 
     // Sons
     const ambientSound = document.getElementById('ambientSound');
@@ -1027,6 +1006,7 @@
     const shieldSound = document.getElementById('shieldSound');
     const hitSound = document.getElementById('hitSound');
     const thrustSound = document.getElementById('thrustSound');
+    const winterSound = document.getElementById('winterSound');
 
     // Função para tocar som
     function playSound(sound) {
@@ -1035,89 +1015,165 @@
       sound.play().catch(e => console.log('Erro ao tocar som:', e));
     }
 
-    // Modal functions
-    function openTechniciansModal() {
-      techniciansModal.style.display = 'block';
+    // Initialize snowflakes
+    function initSnowflakes() {
+      snowflakes = Array.from({ length: 100 }, () => ({
+        x: Math.random() * snowCanvas.width,
+        y: Math.random() * -snowCanvas.height,
+        size: Math.random() * 4 + 2,
+        speed: Math.random() * 2 + 0.5,
+        sway: Math.random() * 0.5 + 0.2,
+        glowIntensity: Math.random() * 10 + 5 // Intensidade do brilho aleatória
+      }));
+    }
+
+    // Draw snowflakes com brilho
+    function drawSnow(currentTime) {
+      snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+
+      if (!snowActive && !snowExiting) return;
+
+      // Calcular opacidade para fade out se estiver saindo
+      let globalAlpha = 1;
+      if (snowExiting && snowExitStartTime > 0) {
+        const elapsed = currentTime - snowExitStartTime;
+        globalAlpha = Math.max(0, 1 - (elapsed / snowExitDuration));
+        if (globalAlpha <= 0) {
+          snowActive = false;
+          snowExiting = false;
+          snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+          return;
+        }
+      }
+
+      snowCtx.globalAlpha = globalAlpha;
+
+      snowflakes.forEach(flake => {
+        // Aplicar brilho
+        snowCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+        snowCtx.shadowBlur = flake.glowIntensity;
+
+        snowCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        snowCtx.beginPath();
+        snowCtx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+        snowCtx.fill();
+
+        // Pequeno brilho interno opcional
+        snowCtx.shadowBlur = flake.glowIntensity / 2;
+        snowCtx.fillStyle = 'rgba(255, 255, 255, 1)';
+        snowCtx.beginPath();
+        snowCtx.arc(flake.x, flake.y, flake.size * 0.5, 0, Math.PI * 2);
+        snowCtx.fill();
+
+        snowCtx.shadowBlur = 0; // Resetar shadow
+
+        // Update position apenas se não estiver saindo (durante saída, só fade)
+        if (!snowExiting) {
+          flake.y += flake.speed;
+          flake.x += Math.sin(flake.y / 50) * flake.sway;
+
+          // Reset if off screen
+          if (flake.y > snowCanvas.height) {
+            flake.y = -flake.size;
+            flake.x = Math.random() * snowCanvas.width;
+          }
+        }
+      });
+
+      snowCtx.globalAlpha = 1;
+    }
+
+    function animateSnow(currentTime) {
+      drawSnow(currentTime);
+      rafIdSnow = requestAnimationFrame(animateSnow);
+    }
+
+    // Modal functions for Amount
+    function openAmountModal() {
+      amountModal.style.display = 'block';
       document.body.style.overflow = 'hidden';
-      generatePixButtons();
+      generateAmountButtons();
     }
 
-    function closeTechniciansModal() {
-      techniciansModal.style.display = 'none';
+    function closeAmountModal() {
+      amountModal.style.display = 'none';
       document.body.style.overflow = 'auto';
-      selectedKey.classList.remove('show');
-      revealedKey.textContent = '';
-      // Resetar botões selecionados
-      document.querySelectorAll('.pix-button').forEach(btn => btn.classList.remove('selected'));
     }
 
-    // Gerar botões horizontais dinamicamente
-    function generatePixButtons() {
-      pixButtons.innerHTML = '';
-      technicians.forEach(tech => {
+    // Gerar botões de valores dinamicamente
+    function generateAmountButtons() {
+      amountButtons.innerHTML = '';
+      amounts.forEach(am => {
         const button = document.createElement('button');
-        button.className = 'pix-button';
-        button.innerHTML = `${tech.emoji} ${tech.name}`;
-        button.dataset.techName = tech.name;
-        button.dataset.pixKey = tech.key;
-        button.onclick = () => selectTechnician(tech.name, tech.key);
-        pixButtons.appendChild(button);
+        button.className = 'amount-button';
+        button.innerHTML = `R$ ${am}`;
+        button.onclick = () => selectAmount(am);
+        amountButtons.appendChild(button);
       });
     }
 
-    // Selecionar técnico: revelar chave, copiar e notificar
-    async function selectTechnician(techName, pixKey) {
-      // Revelar chave
-      revealedKey.textContent = pixKey;
-      selectedKey.classList.add('show');
-
-      // Copiar para clipboard
+    // Selecionar valor pré-definido
+    async function selectAmount(amount) {
+      const pix = pixCodes[amount];
       try {
-        await copyToClipboard(pixKey);
-        showNotification(techName);
+        await copyToClipboard(pix);
+        showNotification(amount);
       } catch (err) {
         console.error('Erro ao copiar:', err);
-        alert('Erro ao copiar a chave PIX. Tente novamente.');
+        alert('Erro ao copiar o código PIX. Tente novamente.');
       }
-
-      // Destacar botão selecionado
-      document.querySelectorAll('.pix-button').forEach(btn => btn.classList.remove('selected'));
-      event.target.classList.add('selected');
-
-      // Scroll suave para o botão se necessário
-      event.target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      closeAmountModal();
     }
 
     // Função para mostrar notificação com logo voando e fundo borrado
-    function showNotification(techName) {
-      copiedTech.textContent = techName;
+    function showNotification(value) {
+      copiedTech.textContent = value;
+      
+      // Ativar animação de neve aqui
+      snowActive = true;
+      snowExiting = false;
+      initSnowflakes();
+      
+      // Tocar som de inverno
+      playSound(winterSound);
       
       // Mostrar container
       notificationContainer.classList.add('show');
+      
+      // Iniciar fundo escuro borrado IMEDIATAMENTE (enquanto o logo sobe)
+      notificationBackdrop.classList.add('show');
       
       // Iniciar animação do logo voando
       notificationLogo.style.opacity = '1';
       notificationLogo.classList.add('animate');
 
-      // Após logo chegar (1.5s), mostrar fundo borrado e mensagem
+      // Após logo chegar (1.5s), mostrar mensagem
       setTimeout(() => {
-        notificationBackdrop.classList.add('show');
         notificationMessage.classList.add('show');
       }, 1500);
 
       // Manter mensagem por 4 segundos
       setTimeout(() => {
-        // Fade out da mensagem e fundo
+        // Fade out da mensagem
         notificationMessage.classList.remove('show');
-        notificationBackdrop.classList.remove('show');
         
-        // Após fade out (0.5s), esconder logo e container
+        // Após fade out (0.5s), iniciar animação de saída da neve e esconder logo e container
         setTimeout(() => {
+          snowExiting = true;
+          snowExitStartTime = performance.now();
+
           notificationLogo.classList.remove('animate');
           notificationLogo.style.opacity = '0';
           notificationContainer.classList.remove('show');
+          notificationBackdrop.classList.remove('show'); // Esconder backdrop no final
+          
+          // Parar som de inverno no final da animação de saída
+          setTimeout(() => {
+            winterSound.pause();
+            winterSound.currentTime = 0;
+          }, snowExitDuration);
         }, 500);
-      }, 1500 + 4000); // 1.5s logo + 4s mensagem
+      }, 1500 + 7000); // 1.5s logo + 4s mensagem
     }
 
     // Função para copiar para clipboard
@@ -1137,8 +1193,8 @@
 
     // Fechar modal ao clicar fora
     window.onclick = function(event) {
-      if (event.target === techniciansModal) {
-        closeTechniciansModal();
+      if (event.target === amountModal) {
+        closeAmountModal();
       }
     }
 
@@ -1251,10 +1307,15 @@
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      snowCanvas.width = window.innerWidth;
+      snowCanvas.height = window.innerHeight;
+      // Reinitialize snowflakes on resize
+      if (snowActive) initSnowflakes();
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    // Initialize stars and snowflakes
     const stars = Array.from({ length: 500 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -1264,6 +1325,9 @@
       layer: Math.random() < 0.4 ? 'distant' : Math.random() < 0.6 ? 'mid' : 'near',
       isHyper: false
     }));
+
+    initSnowflakes();
+    animateSnow(performance.now());
 
     function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1288,6 +1352,7 @@
         if (s.y > canvas.height) s.y = 0;
       }
       ctx.globalAlpha = 1;
+
       rafIdStars = requestAnimationFrame(drawStars);
     }
 
