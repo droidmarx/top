@@ -68,6 +68,12 @@
       filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1)) brightness(1.5) saturate(2.0) contrast(1.2);
       z-index: 5;
       position: relative;
+      cursor: pointer; /* Adicionado para indicar que o logo é clicável */
+      transition: transform 0.2s ease; /* Suave hover no logo */
+    }
+
+    img:hover {
+      transform: scale(1.05); /* Efeito de hover no logo */
     }
 
     .flare {
@@ -126,6 +132,23 @@
       overflow: hidden;
     }
 
+    /* Estilo específico para o botão de gorjeta - mais simples e acolhedor */
+    #tipButton {
+      background: linear-gradient(45deg, #ffc107, #ff9800);
+      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    #tipButton:hover {
+      box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+      transform: translateY(-2px) scale(1.05);
+    }
+
     button::before {
       content: '';
       position: absolute;
@@ -160,7 +183,7 @@
     }
 
     #playButton {
-      display: none;
+      display: none; /* Botão "Jogar" oculto permanentemente */
     }
 
     .overlay {
@@ -412,7 +435,13 @@
       }
 
       #playButton {
-        display: block;
+        display: none; /* Mantido oculto em mobile também */
+      }
+
+      #tipButton {
+        font-size: 1.4rem;
+        padding: 15px 30px;
+        min-width: 250px;
       }
 
       #gameOverOverlay button {
@@ -447,6 +476,10 @@
       .success-message {
         font-size: 1.4rem;
       }
+
+      img:hover {
+        transform: scale(1.1); /* Ajuste para mobile */
+      }
     }
 
     .rastro {
@@ -473,6 +506,324 @@
       opacity: 1;
       animation: pulsoRastroCore 0.5s ease-in-out infinite;
       pointer-events: none;
+    }
+
+    /* Estilos para o Modal de Técnicos (scroll lateral) */
+    .technicians-modal {
+      display: none;
+      position: fixed;
+      z-index: 30;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .technicians-modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      transition: all 0.3s ease;
+      z-index: 5;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      transform: scale(1.1);
+    }
+
+    .technicians-modal h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .technicians-modal p {
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .pix-buttons {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 10px;
+      margin-top: 10px;
+      width: 100%;
+      height: auto;
+      padding: 10px 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+
+    .pix-buttons::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .pix-buttons::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 3px;
+    }
+
+    .pix-buttons::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .pix-buttons::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .pix-button {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 180px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pix-button:hover,
+    .pix-button.selected {
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+      transform: translateY(-2px) scale(1.05);
+      background: linear-gradient(45deg, #20c997, #28a745);
+    }
+
+    .selected-key {
+      margin-top: 20px;
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .selected-key.show {
+      display: flex;
+    }
+
+    .pix-key-display {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 1rem;
+      color: #00ff00;
+      word-break: break-all;
+      text-align: center;
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .gratitude-message {
+      font-style: italic;
+      color: #ffd700;
+      text-align: center;
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+
+    /* Container para a notificação com logo voando */
+    .notification-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .notification-container.show {
+      display: flex;
+    }
+
+    /* Fundo escuro borrado durante a exibição da mensagem */
+    .notification-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .notification-backdrop.show {
+      opacity: 1;
+    }
+
+    /* Logo voando na notificação - posicionado mais acima */
+    .notification-logo {
+      position: absolute;
+      top: 25%; /* Posicionado mais acima da mensagem (que está em ~50%) */
+      left: 50%;
+      transform: translateX(-50%) translateY(100vh) scale(0.7);
+      width: 150px;
+      filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1)) brightness(1.5) saturate(2.0) contrast(1.2);
+      z-index: 101;
+      opacity: 0;
+    }
+
+    /* Animação ajustada para o logo na notificação */
+    @keyframes notificationLogoEntrance {
+      0% { 
+        transform: translateX(-50%) translateY(100vh) scale(0.7); 
+        opacity: 0; 
+      }
+      40% { 
+        transform: translateX(-50%) translateY(30px) scale(1.3); 
+        opacity: 1; 
+      }
+      60% { 
+        transform: translateX(-50%) translateY(-20px) scale(0.95); 
+      }
+      100% { 
+        transform: translateX(-50%) translateY(0) scale(1); 
+      }
+    }
+
+    .notification-logo.animate {
+      animation: notificationLogoEntrance 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+
+    /* Mensagem da notificação - centralizada abaixo do logo */
+    .notification-message {
+      position: absolute;
+      top: 55%; /* Abaixo do logo (que termina em 25% + altura) */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
+      transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      text-align: center;
+      font-weight: 600;
+      max-width: 80%;
+      z-index: 102;
+    }
+
+    .notification-message.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Efeitos especiais do canvas durante a notificação - aumentar intensidade */
+    .notification-container.show ~ #spaceCanvas,
+    .notification-container.show ~ .nebula,
+    .notification-container.show ~ #spaceCanvas::before {
+      animation-duration: 0.5s !important; /* Acelerar animações para mais dinamismo */
+      opacity: 0.8 !important;
+    }
+
+    .notification-container.show ~ canvas {
+      filter: brightness(1.2) contrast(1.1); /* Aumentar brilho e contraste dos efeitos */
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .technicians-modal-content {
+        width: 85%; /* Reduzido de 95% para 85% em mobile para menor largura */
+        margin: 10% auto;
+        padding: 20px;
+      }
+
+      .pix-buttons {
+        gap: 8px;
+        padding: 5px 0;
+      }
+
+      .pix-button {
+        font-size: 1.3rem;
+        padding: 12px 20px;
+        min-width: 160px;
+      }
+
+      .pix-key-display {
+        font-size: 0.9rem;
+      }
+
+      .notification-message {
+        padding: 15px 20px;
+        max-width: 90%;
+        font-size: 0.9rem;
+        top: 60%; /* Ajuste para mobile */
+      }
+
+      .notification-logo {
+        top: 20%; /* Ajuste para mobile */
+        width: 120px;
+      }
+
+      .notification-container.show ~ canvas {
+        filter: brightness(1.3) contrast(1.2); /* Mais intenso em mobile */
+      }
     }
 
     @keyframes entradaLogo {
@@ -535,29 +886,6 @@
       100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
     }
 
-    @keyframes logoFlyover {
-      0% {
-        transform: translate(0, 100vh) scale(0.5) rotate(0deg);
-        opacity: 0;
-        filter: drop-shadow(0 0 10px rgba(21, 94, 183, 0.5));
-      }
-      30% {
-        transform: translate(20vw, 70vh) scale(0.8) rotate(10deg);
-        opacity: 1;
-        filter: drop-shadow(0 0 20px rgba(21, 94, 183, 0.8));
-      }
-      70% {
-        transform: translate(-20vw, 30vh) scale(1.2) rotate(-5deg);
-        opacity: 1;
-        filter: drop-shadow(0 0 30px rgba(21, 94, 183, 1));
-      }
-      100% {
-        transform: translate(0, -100vh) scale(0.5) rotate(0deg);
-        opacity: 0;
-        filter: drop-shadow(0 0 10px rgba(21, 94, 183, 0.5));
-      }
-    }
-
     .powerup {
       position: absolute;
       border-radius: 50%;
@@ -572,12 +900,12 @@
   <div class="rastro" id="rastro"></div>
   <div class="rastro-core" id="rastroCore"></div>
   <div class="flare" id="flare"></div>
-  <img id="logo" src="logo.png" alt="IndaiaFibra Logo">
+  <img id="logo" src="logo.png" alt="IndaiaFibra Logo" onclick="startGame()">
   <p id="text1">Avalie nosso serviço</p>
   <p id="text2">Obrigado!</p>
   <div class="button-container">
+    <button id="tipButton" onclick="openTechniciansModal()">💝 Gorjeta</button>
     <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar Agora</button>
-    <button id="playButton" onclick="startGame()">Jogar</button>
   </div>
   <div class="overlay" id="overlay"></div>
   <div id="gameOverOverlay">
@@ -590,6 +918,31 @@
     <button onclick="triggerExitSequence()">Avaliar Serviço</button>
   </div>
 
+  <!-- Modal para Técnicos (agora com scroll horizontal de botões e revelação da chave ao clicar) -->
+  <div id="techniciansModal" class="technicians-modal">
+    <div class="technicians-modal-content">
+      <span class="close" onclick="closeTechniciansModal()">&times;</span>
+      <h2>Envie uma gorjeta ao técnico</h2>
+      <p>Deslize para o lado e selecione o técnico para revelar sua chave PIX e copiá-la automaticamente!</p>
+      <div class="pix-buttons" id="pixButtons">
+        <!-- Botões gerados dinamicamente no JS -->
+      </div>
+      <div class="selected-key" id="selectedKey">
+        <div class="pix-key-display" id="revealedKey"></div>
+        <p class="gratitude-message">Faça a transferência de qualquer valor como gesto de gratidão!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container da Notificação com Logo Voando e Fundo Borrado -->
+  <div id="notificationContainer" class="notification-container">
+    <div class="notification-backdrop" id="notificationBackdrop"></div>
+    <img id="notificationLogo" class="notification-logo" src="logo.png" alt="Logo IndaiaFibra">
+    <div id="notificationMessage" class="notification-message">
+      Muito obrigado por confiar no meu trabalho! <br><small>Chave PIX do <span id="copiedTech"></span> foi copiada!</small>
+    </div>
+  </div>
+
   <!-- Sons de fundo e efeitos -->
   <audio id="ambientSound" src="ambient.mp3" loop volume="0.3"></audio>
   <audio id="shootSound" src="shoot.mp3" preload="auto"></audio>
@@ -598,8 +951,6 @@
   <audio id="shieldSound" src="shield.mp3" preload="auto"></audio>
   <audio id="hitSound" src="hit.mp3" preload="auto"></audio>
   <audio id="thrustSound" src="thrust.mp3" loop preload="auto"></audio>
-  <audio id="ammoRegenSound" src="ammo_regen.mp3" preload="auto"></audio> <!-- Novo som para regeneração de munição -->
-  <audio id="downgradeSound" src="downgrade.mp3" preload="auto"></audio> <!-- Novo som para regressão de modelo de tiro -->
 
   <script>
     const canvas = document.getElementById('spaceCanvas');
@@ -611,6 +962,15 @@
     const overlay = document.getElementById('overlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const buttonContainer = document.querySelector('.button-container');
+    const techniciansModal = document.getElementById('techniciansModal');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const notificationBackdrop = document.getElementById('notificationBackdrop');
+    const notificationLogo = document.getElementById('notificationLogo');
+    const notificationMessage = document.getElementById('notificationMessage');
+    const copiedTech = document.getElementById('copiedTech');
+    const pixButtons = document.getElementById('pixButtons');
+    const selectedKey = document.getElementById('selectedKey');
+    const revealedKey = document.getElementById('revealedKey');
     const pageStartTime = Date.now();
     let rafIdStars, rafIdParticles, rafIdGame;
     let hyperdriveActive = false;
@@ -621,26 +981,20 @@
     let shipX, shipY, shipWidth = 120, shipHeight = 120;
     let score = 0;
     let lives = 5;
-    let ammo = 3;
-    const maxAmmo = [0, 20, 10, 5, 3]; // Modelo 1:20, 2:10, 3:5, 4:3
-    let destroyedMeteors = 0;
-    let lastAmmoRegen = Date.now();
-    let ammoRegenInterval = 3000;
-    let downgradeFlash = 0;
     let gameStartTime;
     let keys = {};
     let asteroids = [];
     let powerups = [];
     let bullets = [];
-    let lasers = []; // Novo para lasers do modelo 4
     let thrustParticles = [];
     let explosionParticles = [];
     let asteroidFlames = [];
-    let powerUpLevel = 4; // Inicia com modelo 4 (laser, melhor)
+    let powerUpLevel = 0;
     let baseSpeed = 4;
     let currentSpeed = baseSpeed;
     let shieldActive = false;
     let shieldCount = 0;
+    let shieldEndTime = 0;
     let speedBoostEndTime = 0;
     let touchActive = false;
     let doubleClickTimer = 0;
@@ -653,6 +1007,17 @@
 
     const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
 
+    // Dados dos técnicos (chaves PIX hardcoded)
+    const technicians = [
+      { name: 'Guilherme', key: '39892797850', emoji: '👷🏽‍♂️' },
+      { name: 'Sérgio', key: '19992681056', emoji: '👷🏽‍♂️' },
+      { name: 'André', key: '28087258843', emoji: '👷🏽‍♂️' },
+      { name: 'Washington', key: 'PIX-CHAVE-WASHINGTON', emoji: '👷🏽‍♂️' },
+      { name: 'Robson', key: 'PIX-CHAVE-ROBSON', emoji: '👷🏽‍♂️' },
+      { name: 'Elvis', key: 'PIX-CHAVE-ELVIS', emoji: '👷🏽‍♂️' },
+      { name: 'Janderson', key: 'PIX-CHAVE-JANDERSON', emoji: '👷🏽‍♂️' }
+    ];
+
     // Sons
     const ambientSound = document.getElementById('ambientSound');
     const shootSound = document.getElementById('shootSound');
@@ -661,23 +1026,127 @@
     const shieldSound = document.getElementById('shieldSound');
     const hitSound = document.getElementById('hitSound');
     const thrustSound = document.getElementById('thrustSound');
-    const ammoRegenSound = document.getElementById('ammoRegenSound');
-    const downgradeSound = document.getElementById('downgradeSound');
 
     // Função para tocar som
     function playSound(sound) {
       sound.currentTime = 0;
-      sound.volume = 0.5;
+      sound.volume = 0.5; // Volume padrão para efeitos
       sound.play().catch(e => console.log('Erro ao tocar som:', e));
+    }
+
+    // Modal functions
+    function openTechniciansModal() {
+      techniciansModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      generatePixButtons();
+    }
+
+    function closeTechniciansModal() {
+      techniciansModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      selectedKey.classList.remove('show');
+      revealedKey.textContent = '';
+      // Resetar botões selecionados
+      document.querySelectorAll('.pix-button').forEach(btn => btn.classList.remove('selected'));
+    }
+
+    // Gerar botões horizontais dinamicamente
+    function generatePixButtons() {
+      pixButtons.innerHTML = '';
+      technicians.forEach(tech => {
+        const button = document.createElement('button');
+        button.className = 'pix-button';
+        button.innerHTML = `${tech.emoji} ${tech.name}`;
+        button.dataset.techName = tech.name;
+        button.dataset.pixKey = tech.key;
+        button.onclick = () => selectTechnician(tech.name, tech.key);
+        pixButtons.appendChild(button);
+      });
+    }
+
+    // Selecionar técnico: revelar chave, copiar e notificar
+    async function selectTechnician(techName, pixKey) {
+      // Revelar chave
+      revealedKey.textContent = pixKey;
+      selectedKey.classList.add('show');
+
+      // Copiar para clipboard
+      try {
+        await copyToClipboard(pixKey);
+        showNotification(techName);
+      } catch (err) {
+        console.error('Erro ao copiar:', err);
+        alert('Erro ao copiar a chave PIX. Tente novamente.');
+      }
+
+      // Destacar botão selecionado
+      document.querySelectorAll('.pix-button').forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+
+      // Scroll suave para o botão se necessário
+      event.target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    // Função para mostrar notificação com logo voando e fundo borrado
+    function showNotification(techName) {
+      copiedTech.textContent = techName;
+      
+      // Mostrar container
+      notificationContainer.classList.add('show');
+      
+      // Iniciar animação do logo voando
+      notificationLogo.style.opacity = '1';
+      notificationLogo.classList.add('animate');
+
+      // Após logo chegar (1.5s), mostrar fundo borrado e mensagem
+      setTimeout(() => {
+        notificationBackdrop.classList.add('show');
+        notificationMessage.classList.add('show');
+      }, 1500);
+
+      // Manter mensagem por 4 segundos
+      setTimeout(() => {
+        // Fade out da mensagem e fundo
+        notificationMessage.classList.remove('show');
+        notificationBackdrop.classList.remove('show');
+        
+        // Após fade out (0.5s), esconder logo e container
+        setTimeout(() => {
+          notificationLogo.classList.remove('animate');
+          notificationLogo.style.opacity = '0';
+          notificationContainer.classList.remove('show');
+        }, 500);
+      }, 1500 + 4000); // 1.5s logo + 4s mensagem
+    }
+
+    // Função para copiar para clipboard
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        // Fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    }
+
+    // Fechar modal ao clicar fora
+    window.onclick = function(event) {
+      if (event.target === techniciansModal) {
+        closeTechniciansModal();
+      }
     }
 
     // Cores para o rastro baseadas no powerUpLevel
     const trailColors = {
-      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' },
+      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' }, // Laranja para default, fumaça marrom
       1: { fire: 'hsl(200, 100%, 50%)', smoke: 'hsl(200, 50%, 60%)' },
       2: { fire: 'hsl(60, 100%, 50%)', smoke: 'hsl(60, 50%, 70%)' },
-      3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' },
-      4: { fire: 'hsl(0, 100%, 60%)', smoke: 'hsl(0, 50%, 50%)' }
+      3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' }
     };
 
     // Função para vibração em dispositivos móveis
@@ -732,6 +1201,7 @@
         document.getElementById('nameInput').style.display = 'none';
       }
 
+      // Animação legal para o Ranking TOP 5
       setTimeout(() => {
         topList.classList.add('animate-ranking');
       }, 100);
@@ -745,21 +1215,25 @@
       }
       saveScore(name, currentScore).then(() => {
         const inputDiv = document.getElementById('nameInput');
-        
+
+        // Criar mensagem de sucesso
         const successMsg = document.createElement('p');
         successMsg.className = 'success-message';
         successMsg.innerHTML = '✅ Score salvo com sucesso!';
         successMsg.style.opacity = '0';
         successMsg.style.transform = 'scale(0.8)';
-        
-        inputDiv.innerHTML = '';
+
+        // Adicionar à div e mostrar
+        inputDiv.innerHTML = ''; // Limpa o input anterior
         inputDiv.appendChild(successMsg);
         inputDiv.style.display = 'block';
-        
+
+        // Animação de entrada
         setTimeout(() => {
           successMsg.classList.add('show');
         }, 10);
-        
+
+        // Animação de saída após 1.5s
         setTimeout(() => {
           successMsg.style.opacity = '0';
           successMsg.style.transform = 'scale(1.1)';
@@ -876,8 +1350,10 @@
       rafIdParticles = requestAnimationFrame(updateParticles);
     }
 
+    // Função para criar partículas de thrust com cor baseada no powerUpLevel e fumaça marrom
     function createThrustParticle(x, y) {
       const colors = trailColors[powerUpLevel] || trailColors[0];
+      // Fogo
       for (let i = 0; i < 3; i++) {
         thrustParticles.push({
           x: x + Math.random() * 20 - 10,
@@ -892,6 +1368,7 @@
           glow: true
         });
       }
+      // Poeira/fumaça marrom
       for (let i = 0; i < 4; i++) {
         thrustParticles.push({
           x: x + Math.random() * 20 - 10,
@@ -900,7 +1377,7 @@
           vy: Math.random() * 3 + 1.5,
           size: Math.random() * 8 + 3,
           alpha: 0.8,
-          color: colors.smoke,
+          color: colors.smoke, // Marrom
           decay: 0.025,
           life: 45,
           trail: true
@@ -908,6 +1385,7 @@
       }
     }
 
+    // Update thrust particles
     function updateThrustParticles() {
       for (let i = thrustParticles.length - 1; i >= 0; i--) {
         const p = thrustParticles[i];
@@ -923,6 +1401,7 @@
       }
     }
 
+    // Draw thrust particles
     function drawThrustParticles() {
       thrustParticles.forEach(p => {
         ctx.save();
@@ -937,7 +1416,7 @@
         ctx.fill();
         if (p.trail && Math.random() < 0.3) {
           ctx.globalAlpha = p.alpha * 0.5;
-          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
+          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)'; // Marrom claro para trail
           ctx.beginPath();
           ctx.arc(p.x - p.vx * 2, p.y - p.vy * 2, p.size * 0.5, 0, Math.PI * 2);
           ctx.fill();
@@ -947,6 +1426,7 @@
       ctx.shadowBlur = 0;
     }
 
+    // Partículas de explosão marrom
     function createExplosion(x, y, count = 8) {
       for (let i = 0; i < count; i++) {
         explosionParticles.push({
@@ -956,7 +1436,7 @@
           vy: (Math.random() - 0.5) * 10,
           size: Math.random() * 6 + 3,
           alpha: 1,
-          color: `hsl(20, 30%, ${Math.random() * 20 + 30}%)`,
+          color: `hsl(20, 30%, ${Math.random() * 20 + 30}%)`, // Tons de marrom
           decay: 0.05,
           life: 30,
           glow: true
@@ -995,6 +1475,7 @@
       ctx.shadowBlur = 0;
     }
 
+    // Chamas para asteroides
     function createAsteroidFlame(a) {
       if (!a.flames) a.flames = [];
       for (let i = 0; i < 3; i++) {
@@ -1025,7 +1506,7 @@
               a.flames.splice(i, 1);
             }
           }
-          if (Math.random() < 0.3) createAsteroidFlame(a);
+          if (Math.random() < 0.3) createAsteroidFlame(a); // Manter chamas vivas
         } else {
           createAsteroidFlame(a);
         }
@@ -1042,7 +1523,7 @@
             ctx.shadowColor = f.color;
             ctx.shadowBlur = 6;
             ctx.beginPath();
-            ctx.ellipse(f.x, f.y, f.size, f.size * 1.5, 0, 0, Math.PI * 2);
+            ctx.ellipse(f.x, f.y, f.size, f.size * 1.5, 0, 0, Math.PI * 2); // Elipse para chama
             ctx.fill();
             ctx.restore();
           });
@@ -1051,43 +1532,18 @@
       ctx.shadowBlur = 0;
     }
 
-    // Função para atirar baseada no modelo
+    // Função para atirar baseada no nível de power-up
     function shoot() {
       if (powerUpLevel === 0) return;
 
-      if (ammo <= 0) {
-        if (powerUpLevel > 1) {
-          powerUpLevel--;
-          ammo = maxAmmo[powerUpLevel];
-          playSound(downgradeSound);
-          vibrate(80);
-          downgradeFlash = 30;
-          for (let k = 0; k < 12; k++) {
-            createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ff0000');
-          }
-          createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 6);
-        } else {
-          return;
-        }
-      }
-
-      ammo--;
-
       const shipCenterX = shipX + shipWidth / 2;
       const shipCenterY = shipY;
-      const baseSpeed = 10 + powerUpLevel * 2;
-      const baseSize = powerUpLevel;
-      let color;
-      switch (powerUpLevel) {
-        case 1: color = '#ffffff'; break;
-        case 2: color = '#ffff00'; break;
-        case 3: color = '#ff00ff'; break;
-        case 4: color = '#00ff00'; break;
-        default: color = '#ffffff';
-      }
+      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com nível
+      const baseSize = 2 + powerUpLevel * 2; // Calibre (tamanho) aumenta
+      const color = powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000';
 
       if (powerUpLevel === 1) {
-        // Modelo 1: Tiro único fino para cima
+        // Tiro único reto
         bullets.push({
           x: shipCenterX,
           y: shipCenterY,
@@ -1097,7 +1553,7 @@
           color: color
         });
       } else if (powerUpLevel === 2) {
-        // Modelo 2: 2 tiros paralelos para cima, calibre mais grosso
+        // Dois tiros paralelos
         const offset = 15;
         bullets.push({
           x: shipCenterX - offset,
@@ -1116,60 +1572,32 @@
           color: color
         });
       } else if (powerUpLevel === 3) {
-        // Modelo 3: 3 tiros - um no meio, dois em diagonal para cima
-        bullets.push({
-          x: shipCenterX,
-          y: shipCenterY,
-          vx: 0,
-          vy: -baseSpeed,
-          size: baseSize,
-          color: color
-        });
-        const angle = Math.PI / 9; // ~20 graus
-        const sideVx = Math.sin(angle) * baseSpeed;
-        const upVy = Math.cos(angle) * baseSpeed;
-        bullets.push({
-          x: shipCenterX,
-          y: shipCenterY,
-          vx: -sideVx,
-          vy: -upVy,
-          size: baseSize,
-          color: color
-        });
-        bullets.push({
-          x: shipCenterX,
-          y: shipCenterY,
-          vx: sideVx,
-          vy: -upVy,
-          size: baseSize,
-          color: color
-        });
-      } else if (powerUpLevel === 4) {
-        // Modelo 4: Varredura horizontal laser verde de baixo para cima
-        lasers.push({
-          x: 0,
-          y: shipY,
-          width: canvas.width,
-          height: 8,
-          speed: 20,
-          color: color
-        });
+        // Três tiros em spread (leque)
+        const angleSpread = Math.PI / 6; // 30 graus de spread total
+        for (let i = -1; i <= 1; i++) {
+          const angle = i * (angleSpread / 2);
+          bullets.push({
+            x: shipCenterX,
+            y: shipCenterY,
+            vx: Math.sin(angle) * baseSpeed * 0.3, // Lateral pequeno
+            vy: -Math.cos(angle) * baseSpeed,
+            size: baseSize,
+            color: color
+          });
+        }
       }
 
       playSound(shootSound);
-      vibrate(30 + powerUpLevel * 10);
+      vibrate(30 + powerUpLevel * 10); // Vibração maior com nível mais alto
     }
 
+    // Game functions
     function startGame() {
       if (gameActive) return;
       gameActive = true;
+      // Remover completamente os botões principais
       buttonContainer.style.display = 'none';
       logo.style.opacity = '0';
-      logo.style.animation = 'none'; // Reset animação
-      logo.style.position = 'relative'; // Reset posição
-      logo.style.left = 'auto';
-      logo.style.top = 'auto';
-      logo.style.zIndex = '5';
       document.querySelector('#text1').style.display = 'none';
       document.querySelector('#text2').style.display = 'none';
       flare.style.opacity = '0';
@@ -1179,20 +1607,15 @@
       thrustParticles.length = 0;
       explosionParticles.length = 0;
       asteroidFlames = [];
-      lasers = [];
       shipX = (canvas.width - shipWidth) / 2;
       shipY = canvas.height - shipHeight - 50;
       score = 0;
       lives = 5;
-      powerUpLevel = 4;
-      ammo = maxAmmo[powerUpLevel];
-      destroyedMeteors = 0;
-      lastAmmoRegen = Date.now();
-      downgradeFlash = 0;
       shieldCount = 0;
       asteroids = [];
       powerups = [];
       bullets = [];
+      powerUpLevel = 0;
       gameStartTime = Date.now();
       lastDifficultyIncrease = gameStartTime;
       difficultyLevel = 0;
@@ -1205,6 +1628,7 @@
       isThrusting = false;
       wasMoving = false;
       lastTime = performance.now();
+      // Iniciar som ambiente
       ambientSound.play().catch(e => console.log('Erro ao tocar som ambiente:', e));
       gameLoop(lastTime);
     }
@@ -1227,20 +1651,11 @@
 
       if (Date.now() > speedBoostEndTime) currentSpeed = baseSpeed;
       else currentSpeed = baseSpeed * 1.5;
-
-      shieldActive = shieldCount > 0;
-
-      if (downgradeFlash > 0) {
-        downgradeFlash--;
-      }
-
-      const now = Date.now();
-      if (now - lastAmmoRegen > ammoRegenInterval && ammo < maxAmmo[powerUpLevel]) {
-        ammo++;
-        lastAmmoRegen = now;
-        playSound(ammoRegenSound);
-        vibrate(50);
-        createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ffff00');
+      if (Date.now() > shieldEndTime) {
+        shieldCount = 0;
+        shieldActive = false;
+      } else {
+        shieldActive = shieldCount > 0;
       }
 
       let moving = false;
@@ -1262,6 +1677,7 @@
         moving = true;
       }
 
+      // Gerenciar som de thrust
       if (moving) {
         if (!isThrusting) {
           thrustSound.volume = 0.3;
@@ -1280,6 +1696,7 @@
       }
       wasMoving = moving;
 
+      // Atirar baseado no powerUpLevel
       if (keys[' '] && powerUpLevel > 0) {
         shoot();
         keys[' '] = false;
@@ -1299,38 +1716,11 @@
         }
       }
 
-      // Atualizar lasers e colisões
-      for (let i = lasers.length - 1; i >= 0; i--) {
-        let l = lasers[i];
-        l.y -= l.speed * deltaTime;
-        // Colisões com asteroides (área varrida: entre shipY e l.y)
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-          let a = asteroids[j];
-          if (a.y < shipY && a.y > l.y) {
-            destroyedMeteors++;
-            score += 20 * powerUpLevel;
-            ammo = Math.min(maxAmmo[powerUpLevel], ammo + 1);
-            createExplosion(a.x, a.y, 12);
-            playSound(explosionSound);
-            vibrate(50);
-            asteroids.splice(j, 1);
-            if (destroyedMeteors % 5 === 0) {
-              shieldCount = Math.min(5, shieldCount + 1);
-              playSound(shieldSound);
-              vibrate(100);
-            }
-          }
-        }
-        if (l.y < 0) {
-          lasers.splice(i, 1);
-        }
-      }
-
       for (let i = bullets.length - 1; i >= 0; i--) {
         let b = bullets[i];
         b.x += b.vx * deltaTime;
         b.y += b.vy * deltaTime;
-        if (b.y < 0 || b.x < 0 || b.x > canvas.width) {
+        if (b.y < 0) {
           bullets.splice(i, 1);
           continue;
         }
@@ -1340,19 +1730,12 @@
           const bdy = b.y - a.y;
           const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
           if (bdist < b.size + a.size) {
-            destroyedMeteors++;
-            score += 20 * powerUpLevel;
-            ammo = Math.min(maxAmmo[powerUpLevel], ammo + 1);
+            score += 20 * powerUpLevel; // Pontos extras baseado no nível
             bullets.splice(i, 1);
-            createExplosion(a.x, a.y, 12);
+            createExplosion(a.x, a.y, 12); // Explosão marrom
             playSound(explosionSound);
-            vibrate(50);
+            vibrate(50); // Vibração no acerto
             asteroids.splice(j, 1);
-            if (destroyedMeteors % 5 === 0) {
-              shieldCount = Math.min(5, shieldCount + 1);
-              playSound(shieldSound);
-              vibrate(100);
-            }
             break;
           }
         }
@@ -1360,7 +1743,6 @@
 
       for (let i = asteroids.length - 1; i >= 0; i--) {
         let a = asteroids[i];
-        a.x += a.vx * deltaTime;
         a.y += a.speed * deltaTime;
         if (a.y > canvas.height) {
           asteroids.splice(i, 1);
@@ -1370,44 +1752,23 @@
         const dy = a.y - (shipY + shipHeight / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < a.size + shipWidth / 4) {
-          // Regressão do modelo no impacto
-          if (powerUpLevel > 1) {
-            powerUpLevel--;
-            ammo = Math.min(ammo, maxAmmo[powerUpLevel]);
-            playSound(downgradeSound);
-            vibrate(80);
-            downgradeFlash = 30;
-            for (let k = 0; k < 12; k++) {
-              createParticle(shipX + shipWidth / 2, shipY + shipHeight / 2, false, '#ff0000');
-            }
-            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 6);
-          }
-
-          let hitHandled = false;
-          if (ammo > 0) {
-            ammo--;
-            createParticle(a.x, a.y, true, 'rgba(255, 165, 0, 0.5)');
-            playSound(hitSound);
-            vibrate(50);
-            hitHandled = true;
-          } else if (shieldCount > 0) {
+          if (shieldCount > 0) {
             shieldCount--;
             createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
             playSound(shieldSound);
-            vibrate(100);
-            hitHandled = true;
-          }
-          if (!hitHandled) {
+            vibrate(100); // Vibração no bloqueio de escudo
+            asteroids.splice(i, 1);
+          } else {
             lives--;
-            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15);
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explosão no impacto
             playSound(hitSound);
-            vibrate(200);
+            vibrate(200); // Vibração forte no impacto
+            asteroids.splice(i, 1);
             if (lives <= 0) {
               endGame();
               return;
             }
           }
-          asteroids.splice(i, 1);
         }
       }
 
@@ -1422,19 +1783,11 @@
         const dy = p.y - (shipY + shipHeight / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < p.size + shipWidth / 4) {
-          const oldLevel = powerUpLevel;
-          if (p.type === 'weapon') {
-            powerUpLevel = Math.min(4, powerUpLevel + 1);
-            ammo = Math.min(ammo, maxAmmo[powerUpLevel]);
-          } else if (p.type === 'ammo') {
-            ammo = maxAmmo[powerUpLevel];
-            playSound(ammoRegenSound);
-          } else {
-            applyPowerUp(p.type);
-          }
+          powerUpLevel = Math.min(3, powerUpLevel + 1);
+          applyPowerUp(p.type);
           powerups.splice(i, 1);
           playSound(powerupSound);
-          vibrate(150);
+          vibrate(150); // Vibração no power-up
           for (let k = 0; k < 6; k++) {
             createParticle(p.x, p.y, false);
           }
@@ -1442,25 +1795,22 @@
       }
 
       if (Math.random() < asteroidSpawnRate * deltaTime) {
-        const diagonalIntensity = Math.min(4, score / 500);
-        const vx = (Math.random() - 0.5) * 2 * diagonalIntensity;
         asteroids.push({
           x: Math.random() * canvas.width,
           y: 0,
           size: Math.random() * 20 + 15,
           speed: Math.random() * maxAsteroidSpeed + 3,
-          vx: vx,
           flames: []
         });
       }
 
       if (Math.random() < 0.002 * deltaTime) {
-        const types = ['speed', 'shield', 'life', 'weapon', 'ammo'];
+        const types = ['speed', 'shield', 'life'];
         const type = types[Math.floor(Math.random() * types.length)];
         powerups.push({
           x: Math.random() * canvas.width,
           y: 0,
-          size: 18,
+          size: 12,
           speed: Math.random() * 2 + 1,
           type: type
         });
@@ -1478,9 +1828,11 @@
       }
       ctx.globalAlpha = 1;
 
+      // Draw asteroid flames
       updateAsteroidFlames();
       drawAsteroidFlames();
 
+      // Draw asteroids com emoji 🪨 e chamas
       ctx.shadowColor = 'rgba(139, 69, 19, 0.8)';
       ctx.shadowBlur = 10;
       ctx.font = 'bold 20px Arial, sans-serif';
@@ -1508,61 +1860,20 @@
         ctx.shadowBlur = 0;
       });
 
-      // Desenhar lasers
-      lasers.forEach(l => {
-        ctx.save();
-        ctx.shadowColor = l.color;
-        ctx.shadowBlur = 15;
-        ctx.strokeStyle = l.color;
-        ctx.lineWidth = l.height;
-        ctx.globalAlpha = 0.9;
-        ctx.beginPath();
-        ctx.moveTo(l.x, l.y);
-        ctx.lineTo(l.x + l.width, l.y);
-        ctx.stroke();
-        ctx.restore();
-      });
-
+      // Draw powerups com ícones bonitos (emojis) e animação radial
       for (let p of powerups) {
         const pulseSize = p.size + Math.sin(Date.now() / 200) * 2;
-        let shadowColor, fillColor, icon;
-        switch (p.type) {
-          case 'speed':
-            shadowColor = '#00ffff';
-            fillColor = 'rgba(0, 255, 255, 0.9)';
-            icon = '🚀';
-            break;
-          case 'shield':
-            shadowColor = '#00ff00';
-            fillColor = 'rgba(0, 255, 0, 0.9)';
-            icon = '🛡️';
-            break;
-          case 'life':
-            shadowColor = '#ff0000';
-            fillColor = 'rgba(255, 0, 0, 0.9)';
-            icon = '❤️';
-            break;
-          case 'weapon':
-            shadowColor = '#ffff00';
-            fillColor = 'rgba(255, 255, 0, 0.9)';
-            icon = '🔫';
-            break;
-          case 'ammo':
-            shadowColor = '#00ff00';
-            fillColor = 'rgba(0, 255, 0, 0.9)';
-            icon = '🔋';
-            break;
-        }
-        ctx.shadowColor = shadowColor;
+        ctx.shadowColor = p.type === 'speed' ? '#00ffff' : p.type === 'shield' ? '#00ff00' : '#8000ff';
         ctx.shadowBlur = 12;
-        ctx.fillStyle = fillColor;
+        ctx.fillStyle = p.type === 'speed' ? 'rgba(0, 255, 255, 0.9)' : p.type === 'shield' ? 'rgba(0, 255, 0, 0.9)' : 'rgba(128, 0, 255, 0.9)';
         ctx.beginPath();
         ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.font = `${Math.min(20, canvas.width / 50)}px Arial, sans-serif`;
+        ctx.font = `${Math.min(16, canvas.width / 60)}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+        const icon = p.type === 'speed' ? '🚀' : p.type === 'shield' ? '🛡️' : '❤️';
         ctx.fillText(icon, p.x, p.y);
       }
       ctx.textAlign = 'left';
@@ -1574,26 +1885,30 @@
       updateExplosionParticles();
       drawExplosionParticles();
 
+      // Partículas de exaustão como na intro (sempre ativas durante o jogo, igual à animação inicial)
       const exhaustX = shipX + shipWidth / 2;
       const exhaustY = shipY + shipHeight;
-      for (let i = 0; i < 5; i++) {
+      // Sempre criar partículas para simular thrust constante, mais visível
+      for (let i = 0; i < 5; i++) { // Aumentado para 5 para mais visibilidade
         createParticle(exhaustX, exhaustY - 5);
       }
-      for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < 1; i++) { // Diminuído para 1 para menos fumaça
         createParticle(exhaustX, exhaustY - 5, true);
       }
 
+      // Atualizar partículas
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= p.decay * 0.8;
-        p.size *= p.isSmoke ? 0.99 : 0.96;
+        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e visíveis
+        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para partículas maiores por mais tempo
         p.vy += 0.1;
         p.rotation += p.isSmoke ? 0.05 : 0.1;
         if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
       }
 
+      // Desenhar partículas
       particles.forEach(p => {
         ctx.save();
         ctx.translate(p.x, p.y);
@@ -1601,9 +1916,9 @@
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 8; // Aumentado blur para mais glow
         ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        if (!p.isSmoke && Math.random() < 0.3) {
+        if (!p.isSmoke && Math.random() < 0.3) { // Aumentada chance de brilho
           ctx.fillStyle = 'white';
           ctx.globalAlpha = p.alpha * 0.8;
           ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
@@ -1613,20 +1928,20 @@
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
 
+      // Posicionar rastro abaixo da nave
       rastro.style.left = `${exhaustX - 50}px`;
       rastro.style.top = `${exhaustY}px`;
       rastroCore.style.left = `${exhaustX - 10}px`;
       rastroCore.style.top = `${exhaustY}px`;
 
+      // Cores do escudo baseadas na quantidade
       let shieldColor = 'rgba(21, 94, 183, 1)';
       if (shieldCount === 1) {
-        shieldColor = 'rgba(0, 255, 0, 1)';
+        shieldColor = 'rgba(0, 255, 0, 1)'; // Verde
       } else if (shieldCount === 2) {
-        shieldColor = 'rgba(128, 0, 128, 1)';
+        shieldColor = 'rgba(128, 0, 128, 1)'; // Roxo
       } else if (shieldCount === 3) {
-        shieldColor = 'rgba(0, 0, 255, 1)';
-      } else if (shieldCount >= 4) {
-        shieldColor = 'rgba(255, 255, 0, 1)';
+        shieldColor = 'rgba(0, 0, 255, 1)'; // Azul
       }
       ctx.shadowColor = shieldActive ? shieldColor : 'rgba(21, 94, 183, 1)';
       ctx.shadowBlur = shieldActive ? 30 : 20;
@@ -1634,12 +1949,6 @@
         ctx.drawImage(shipImg, shipX, shipY, shipWidth, shipHeight);
       }
       ctx.shadowBlur = 0;
-
-      if (downgradeFlash > 0) {
-        const flashAlpha = (downgradeFlash / 30) * 0.4;
-        ctx.fillStyle = `rgba(255, 0, 0, ${flashAlpha})`;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
 
       const uiScale = window.innerWidth > 768 ? 1 : 0.8;
       ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
@@ -1649,9 +1958,8 @@
       ctx.textAlign = 'left';
       ctx.fillText(`PONTOS: ${score}`, 20, 40);
       ctx.fillText(`VIDAS: ${'❤️'.repeat(lives)}`, 20, 70);
-      ctx.fillText(`TIROS: ${ammo}/${maxAmmo[powerUpLevel]}`, 20, 100);
-      ctx.fillText(`MODELO: ${powerUpLevel}`, 20, 130);
-      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 160);
+      ctx.fillText(`PODERES: ${powerUpLevel}`, 20, 100);
+      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 130);
       ctx.shadowBlur = 0;
       ctx.textAlign = 'left';
 
@@ -1663,13 +1971,11 @@
       if (type === 'speed') {
         speedBoostEndTime = currentTime + 5000;
       } else if (type === 'shield') {
-        shieldCount = Math.min(5, shieldCount + 1);
+        shieldCount = Math.min(3, shieldCount + 1);
+        shieldEndTime = currentTime + 5000;
+        shieldActive = true;
       } else if (type === 'life') {
-        lives = Math.min(5, lives + 1);
-        if (lives % 5 === 0) {
-          shieldCount = Math.min(5, shieldCount + 1);
-          playSound(shieldSound);
-        }
+        lives = Math.min(5, lives + 1); // Máximo 5 vidas
       }
     }
 
@@ -1681,45 +1987,32 @@
       isThrusting = false;
       rafIdStars = requestAnimationFrame(drawStars);
       rafIdParticles = requestAnimationFrame(updateParticles);
+      logo.style.opacity = '1';
       if (!forceResume) {
-        // Animação do logo sobrevoando a tela
-        logo.style.opacity = '1';
-        logo.style.position = 'relative';
-        logo.style.zIndex = '15';
-        logo.style.animation = 'logoFlyover 4s ease-in-out forwards';
-
-        // Após a animação do logo (4s), mostrar overlay
+        // Exibir score primeiro com animação
+        gameOverOverlay.style.display = 'flex';
+        gameOverOverlay.style.opacity = '0';
         setTimeout(() => {
-          gameOverOverlay.style.display = 'flex';
-          gameOverOverlay.style.opacity = '0';
+          gameOverOverlay.style.opacity = '1';
+          gameOverOverlay.classList.add('show');
+          const scoreEl = gameOverOverlay.querySelector('.score');
+          scoreEl.style.opacity = '0';
+          scoreEl.style.transform = 'scale(0.5)';
+          scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
+          scoreEl.textContent = score;
           setTimeout(() => {
-            gameOverOverlay.style.opacity = '1';
-            gameOverOverlay.classList.add('show');
-            const scoreEl = gameOverOverlay.querySelector('.score');
-            scoreEl.style.opacity = '0';
-            scoreEl.style.transform = 'scale(0.5)';
-            scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            scoreEl.textContent = score;
-            setTimeout(() => {
-              scoreEl.style.opacity = '1';
-              scoreEl.style.transform = 'scale(1)';
-            }, 100);
-          }, 300);
+            scoreEl.style.opacity = '1';
+            scoreEl.style.transform = 'scale(1)';
+          }, 100);
+        }, 300);
 
-          // Após exibir score, animação para o Ranking TOP 5
-          setTimeout(() => {
-            fetchTop5(score);
-          }, 2000);
-        }, 4000); // 4s para a animação do logo
+        // Após exibir score, animação para o Ranking TOP 5
+        setTimeout(() => {
+          fetchTop5(score);
+        }, 2000);
       } else {
-        logo.style.opacity = '1';
-        logo.style.animation = 'none';
-        logo.style.position = 'relative';
-        logo.style.left = 'auto';
-        logo.style.top = 'auto';
-        logo.style.zIndex = '5';
         gameOverOverlay.style.display = 'none';
-        buttonContainer.style.display = 'flex';
+        buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo após game over
         buttonContainer.style.opacity = '1';
       }
     }
@@ -1728,7 +2021,7 @@
       gameOverOverlay.style.display = 'none';
       gameOverOverlay.classList.remove('show');
       document.getElementById('nameInput').style.display = 'none';
-      document.getElementById('nameInput').innerHTML = '';
+      document.getElementById('nameInput').innerHTML = ''; // Limpa o conteúdo ao reiniciar
       document.getElementById('top5').classList.remove('animate-ranking');
       startGame();
     }
@@ -1788,6 +2081,7 @@
     function updateShipPos(tx, ty) {
       shipX = Math.max(0, Math.min(canvas.width - shipWidth, tx - shipWidth / 2));
       shipY = Math.max(0, Math.min(canvas.height - shipHeight, ty - shipHeight / 2));
+      // Atualizar rastro durante toque
       const exhaustX = shipX + shipWidth / 2;
       const exhaustY = shipY + shipHeight;
       rastro.style.left = `${exhaustX - 50}px`;
@@ -1803,14 +2097,7 @@
       }
     });
 
-    logo.addEventListener('click', (e) => {
-      if (gameActive) return;
-      const now = Date.now();
-      if (now - doubleClickTimer < 300) {
-        startGame();
-      }
-      doubleClickTimer = now;
-    });
+    // Removido o event listener de double-click no logo, agora é single-click direto via onclick no HTML
 
     function triggerExitSequence() {
       logo.style.animation = 'zoomLogo 2s ease-in forwards';
@@ -1837,8 +2124,11 @@
       }, 2500);
 
       setTimeout(() => {
-  window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM';
-}, 1700);
+        window.open(
+          'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM',
+          '_blank'
+        );
+      }, 4000);
     }
 
     setTimeout(() => {
