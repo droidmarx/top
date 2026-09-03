@@ -1,1 +1,2323 @@
-FULL_ORIGINAL_CONTENT_PLACEHOLDER_TOO_LARGE_FOR_THIS_CALL
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>IndaiaFibra - Avalia莽茫o</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #00e5ff;
+      --primary-glow: rgba(0, 229, 255, 0.45);
+      --secondary: #2c5aff;
+      --bg-dark: #030613;
+      --text-muted: #8c9bca;
+    }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: var(--bg-dark);
+      color: white;
+    }
+
+    #spaceCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #0a0f2e 0%, #050a1a 50%, #030613 100%);
+      z-index: 0;
+      transition: transform 8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    #snowCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 102;
+      pointer-events: none;
+    }
+
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 229, 255, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(44, 90, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 10%, rgba(0, 180, 255, 0.12) 0%, transparent 60%);
+      z-index: 1;
+      opacity: 0.7;
+      animation: nebulaPulse 20s ease-in-out infinite;
+    }
+
+    .hyperdrive {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(to bottom, rgba(32, 41, 158, 0.6) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(179, 14, 14, 0.95) 100%),
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
+      opacity: 0;
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 0.5s ease-in;
+    }
+
+    img {
+      width: 150px;
+      transform: translateY(100vh) scale(0.7);
+      animation: entradaLogo 3.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+      filter: drop-shadow(0 0 35px rgba(0, 229, 255, 0.7)) brightness(1.1) saturate(1.15) contrast(1.15);
+      z-index: 5;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+    }
+
+    img:hover {
+      transform: scale(1.06);
+      filter: drop-shadow(0 0 45px rgba(0, 229, 255, 0.95)) brightness(1.2) saturate(1.2);
+    }
+
+    .flare {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 200, 100, 0.6) 30%, transparent 70%),
+        radial-gradient(ellipse, rgba(100, 200, 255, 0.4) 0%, transparent 50%);
+      opacity: 0;
+      z-index: 4;
+      animation: flareEffect 0.5s ease-out forwards;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    p {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      margin: 8px 0;
+      opacity: 0;
+      z-index: 5;
+      position: relative;
+      letter-spacing: 1.5px;
+      text-align: center;
+      color: #e8f4ff;
+    }
+
+    #text1 {
+      animation: techTextReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) 2.4s forwards;
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    #text2 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ffffff 0%, var(--primary) 50%, #ffffff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      filter: drop-shadow(0 0 18px var(--primary-glow));
+      animation: techTextReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 3.1s forwards, gradientShift 4s ease infinite 4.3s;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 28px;
+      opacity: 0;
+      animation: buttonTechIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 4s forwards;
+      z-index: 5;
+    }
+
+    button {
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      color: white;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 16px;
+      cursor: pointer;
+      min-width: 220px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15) 0%, rgba(44, 90, 255, 0.25) 100%);
+      box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.1),
+        0 4px 20px rgba(0, 229, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Estilo espec铆fico para o bot茫o de gorjeta - mais simples e acolhedor */
+    #tipButton {
+      display: none; /* Bot茫o oculto permanentemente */
+      background: linear-gradient(45deg, #FF0707, #D3CDC5);
+      box-shadow: 0 4px 15px rgba(40, 36, 36, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    #tipButton:hover {
+      box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.25), transparent);
+      transition: left 0.55s ease;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.03);
+      border-color: rgba(0, 229, 255, 0.7);
+      box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.25),
+        0 8px 32px rgba(0, 229, 255, 0.35),
+        0 0 40px rgba(0, 229, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    #evaluateButton {
+      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 50%, #00e5ff 100%);
+      background-size: 200% auto;
+      border: none;
+      box-shadow:
+        0 4px 24px rgba(0, 229, 255, 0.4),
+        0 0 40px rgba(0, 114, 255, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: buttonGlowPulse 3s ease-in-out infinite 5s;
+    }
+
+    #evaluateButton:hover {
+      background-position: right center;
+      box-shadow:
+        0 8px 36px rgba(0, 229, 255, 0.55),
+        0 0 60px rgba(0, 114, 255, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    #playButton {
+      display: none; /* Bot茫o "Jogar" oculto permanentemente */
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(221, 221, 221, 1);
+      opacity: 0;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 1s ease-in;
+    }
+
+    #gameOverOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at center, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.95) 100%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23ff0000" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ff0000" stop-opacity="0"/></radialGradient></defs><circle cx="50" cy="50" r="50" fill="url(%23g)"/></svg>') center/cover;
+      z-index: 20;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      gap: 20px;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
+    }
+
+    #gameOverOverlay h2 {
+      font-size: 2.5rem;
+      margin: 0 0 10px;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(255,0,0,0.8);
+      letter-spacing: 2px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.6s ease-out;
+    }
+
+    #gameOverOverlay p {
+      font-size: 1.8rem;
+      margin: 0 0 20px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.8s ease-out;
+    }
+
+    #gameOverOverlay.show h2,
+    #gameOverOverlay.show p {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .score {
+      color: #FFD700;
+      text-shadow: 0 0 15px #FFD700;
+      font-weight: 700;
+      font-size: 1.2em;
+    }
+
+    #top5 {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+      max-width: 300px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.5s ease-out;
+    }
+
+    #top5 li {
+      font-size: 1.2rem;
+      margin: 8px 0;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      text-align: left;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      opacity: 0;
+      transform: translateX(-30px) translateY(20px);
+      transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    #top5.animate-ranking {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #top5.animate-ranking li:nth-child(1) {
+      transition-delay: 0.2s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(2) {
+      transition-delay: 0.3s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(3) {
+      transition-delay: 0.4s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(4) {
+      transition-delay: 0.5s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5.animate-ranking li:nth-child(5) {
+      transition-delay: 0.6s;
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    #top5 li:nth-child(1)::before {
+      content: '馃 ';
+      font-size: 1.1em;
+    }
+
+    #top5 li:nth-child(2)::before {
+      content: '馃 ';
+      font-size: 1.1em;
+    }
+
+    #top5 li:nth-child(3)::before {
+      content: '馃 ';
+      font-size: 1.1em;
+    }
+
+    #nameInput {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    #nameInput input {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 15px;
+      width: 200px;
+      max-width: 80%;
+      background: rgba(255, 255, 255, 0.9);
+      color: black;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #nameInput button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      min-width: auto;
+      width: auto;
+    }
+
+    .success-message {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      color: #00ff00;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+      margin: 10px 0;
+    }
+
+    .success-message.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #gameOverOverlay button {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(45deg, #155EB7, #0d47a1);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 0 5px;
+      min-width: auto;
+      box-shadow: 0 4px 15px rgba(21, 94, 183, 0.3);
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    #gameOverOverlay.show button {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.8s;
+    }
+
+    #gameOverOverlay button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(21, 94, 183, 0.4);
+    }
+
+    #gameOverOverlay button:nth-child(3) {
+      background: linear-gradient(45deg, #6c757d, #495057);
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    #gameOverOverlay button:nth-child(3):hover {
+      box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+
+    #gameOverOverlay button:nth-child(4) {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    #gameOverOverlay button:nth-child(4):hover {
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .button-container {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      button {
+        font-size: 1.2rem;
+        padding: 16px 28px;
+        min-width: 260px;
+        border-radius: 18px;
+      }
+
+      #text1 {
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+      }
+
+      #text2 {
+        font-size: 1.45rem;
+      }
+
+      #playButton {
+        display: none; /* Mantido oculto em mobile tamb茅m */
+      }
+
+      #tipButton {
+        display: none; /* Oculto em mobile tamb茅m */
+        font-size: 1.4rem;
+        padding: 15px 30px;
+        min-width: 250px;
+      }
+
+      #gameOverOverlay button {
+        font-size: 1.3rem;
+        padding: 15px 30px;
+        margin: 5px 0;
+        width: 80%;
+      }
+
+      #gameOverOverlay {
+        gap: 15px;
+        padding: 10px;
+      }
+
+      #gameOverOverlay h2 {
+        font-size: 2rem;
+      }
+
+      #gameOverOverlay p {
+        font-size: 1.5rem;
+      }
+
+      #top5 li {
+        font-size: 1.1rem;
+      }
+
+      #nameInput input {
+        width: 250px;
+        max-width: 90%;
+      }
+
+      .success-message {
+        font-size: 1.4rem;
+      }
+
+      img:hover {
+        transform: scale(1.08);
+      }
+    }
+
+    .rastro {
+      position: absolute;
+      width: 100px;
+      height: 350px;
+      background: linear-gradient(to top, rgba(255, 230, 100, 0), rgba(0, 139, 255, 0.8), rgba(255, 50, 50, 1));
+      border-radius: 100px 100px 50px 50px;
+      filter: blur(120px);
+      z-index: 6;
+      opacity: 1;
+      animation: pulsoRastro 1s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .rastro-core {
+      position: absolute;
+      width: 20px;
+      height: 300px;
+      background: linear-gradient(to top, rgba(50, 194, 255, 0.79), rgba(255, 4, 4, 1));
+      border-radius: 40px;
+      filter: blur(40px);
+      z-index: 6;
+      opacity: 1;
+      animation: pulsoRastroCore 0.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /* Estilos para o Modal de Valores (scroll lateral) */
+    .amount-modal {
+      display: none;
+      position: fixed;
+      z-index: 30;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .amount-modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      transition: all 0.3s ease;
+      z-index: 5;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      transform: scale(1.1);
+    }
+
+    .amount-modal h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
+    }
+
+    .amount-modal p {
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .amount-buttons {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 10px;
+      margin-top: 10px;
+      width: 100%;
+      height: auto;
+      padding: 10px 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+
+    .amount-buttons::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .amount-buttons::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 3px;
+    }
+
+    .amount-buttons::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .amount-buttons::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .amount-button {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 180px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .amount-button:hover {
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+      transform: translateY(-2px) scale(1.05);
+      background: linear-gradient(45deg, #20c997, #28a745);
+    }
+
+    /* Container para a notifica莽茫o com logo voando */
+    .notification-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .notification-container.show {
+      display: flex;
+    }
+
+    /* Fundo escuro borrado durante a exibi莽茫o da mensagem */
+    .notification-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .notification-backdrop.show {
+      opacity: 1;
+    }
+
+/* Logo voando na notifica莽茫o - posicionado no topo */
+.notification-logo {
+  position: absolute;
+  top: 0; /* Alterado para encostar no topo da tela */
+  left: 50%;
+  transform: translateX(-50%) translateY(-150vh) scale(0.5); /* In铆cio acima da tela para "queda" */
+  width: min(50vw, 1024px); /* 50% da largura da viewport, m谩ximo 1024px */
+  height: auto; /* Manter propor莽茫o */
+  filter: drop-shadow(0 0 30px rgba(183, 21, 21, 1));
+  z-index: 101;
+  opacity: 0;
+}
+
+    /* Anima莽茫o ajustada para o logo caindo com quique no topo */
+    @keyframes notificationLogoEntrance {
+      0% { 
+        transform: translateX(-50%) translateY(-150vh) scale(0.5); 
+        opacity: 0; 
+      }
+      70% { 
+        transform: translateX(-50%) translateY(30px) scale(1.1); 
+        opacity: 1; 
+      }
+      85% { 
+        transform: translateX(-50%) translateY(-10px) scale(0.95); 
+      }
+      100% { 
+        transform: translateX(-50%) translateY(0) scale(1); 
+      }
+    }
+
+    .notification-logo.animate {
+      animation: notificationLogoEntrance 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+
+    /* Mensagem da notifica莽茫o - centralizada abaixo do logo - DIV MAIOR */
+    .notification-message {
+      position: absolute;
+      top: 30%; /* Ajustado para ficar abaixo do logo no topo (considerando altura da imagem ~150px) */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      padding: 25px 40px; /* Padding aumentado para div maior */
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
+      transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem; /* Fonte ligeiramente maior */
+      max-width: 85%; /* Largura m谩xima aumentada */
+      z-index: 102;
+    }
+
+    .notification-message.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Efeitos especiais do canvas durante a notifica莽茫o - aumentar intensidade */
+    .notification-container.show ~ #spaceCanvas,
+    .notification-container.show ~ .nebula,
+    .notification-container.show ~ #spaceCanvas::before {
+      animation-duration: 0.5s !important; /* Acelerar anima莽玫es para mais dinamismo */
+      opacity: 0.8 !important;
+    }
+
+    .notification-container.show ~ canvas {
+      filter: brightness(1.2) contrast(1.1); /* Aumentar brilho e contraste dos efeitos */
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .amount-modal-content {
+        width: 85%; /* Reduzido de 95% para 85% em mobile para menor largura */
+        margin: 10% auto;
+        padding: 20px;
+      }
+
+      .amount-buttons {
+        gap: 8px;
+        padding: 5px 0;
+      }
+
+      .amount-button {
+        font-size: 1.3rem;
+        padding: 12px 20px;
+        min-width: 160px;
+      }
+
+      .notification-message {
+        padding: 20px 30px; /* Padding maior em mobile tamb茅m */
+        max-width: 90%;
+        font-size: 1rem; /* Fonte ajustada para mobile */
+        top: 35%; /* Ajuste para mobile, logo em top:0 */
+      }
+
+      .notification-logo {
+        top: 0; /* Mantido no topo em mobile */
+        /* width j谩 茅 responsivo com min(50vw, 1024px) */
+      }
+
+      .notification-container.show ~ canvas {
+        filter: brightness(1.3) contrast(1.2); /* Mais intenso em mobile */
+      }
+    }
+
+    @keyframes entradaLogo {
+      0% { transform: translateY(100vh) scale(0.7); opacity: 0; }
+      40% { transform: translateY(30px) scale(1.3); opacity: 1; }
+      60% { transform: translateY(-20px) scale(0.95); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes techTextReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+        filter: blur(12px);
+        letter-spacing: 8px;
+      }
+      60% {
+        opacity: 1;
+        filter: blur(0);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        letter-spacing: 1.5px;
+      }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
+    @keyframes buttonTechIn {
+      0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.85);
+        filter: blur(8px);
+      }
+      70% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(-6px) scale(1.04);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes buttonGlowPulse {
+      0%, 100% {
+        box-shadow:
+          0 4px 24px rgba(0, 229, 255, 0.4),
+          0 0 40px rgba(0, 114, 255, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      }
+      50% {
+        box-shadow:
+          0 6px 32px rgba(0, 229, 255, 0.55),
+          0 0 55px rgba(0, 114, 255, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    @keyframes zoomLogo {
+      0% { transform: translateY(0) scale(1); filter: brightness(1.3); }
+      100% { transform: translateY(-120vh) scale(0.25); filter: brightness(2.5) drop-shadow(0 0 70px rgba(255, 150, 50, 1)); }
+    }
+
+    @keyframes pulsoRastro {
+      0% { opacity: 0.9; transform: scaleY(1) scaleX(1); }
+      50% { opacity: 1; transform: scaleY(1.3) scaleX(0.8); }
+      100% { opacity: 0.9; transform: scaleY(1) scaleX(1); }
+    }
+
+    @keyframes pulsoRastroCore {
+      0% { opacity: 0.95; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.25); }
+      100% { opacity: 0.95; transform: scaleY(1); }
+    }
+
+    @keyframes cameraZoom {
+      0% { transform: scale(1); }
+      100% { transform: scale(2); }
+    }
+
+    @keyframes nebulaPulse {
+      0% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+      25% { opacity: 0.7; transform: scale(1.02) rotate(1deg); }
+      50% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+      75% { opacity: 0.65; transform: scale(1.01) rotate(-1deg); }
+      100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes flareEffect {
+      0% { opacity: 0.9; transform: scale(0.1) rotate(0deg); }
+      50% { opacity: 0.5; transform: scale(1.2) rotate(180deg); }
+      100% { opacity: 0; transform: scale(2) rotate(360deg); }
+    }
+
+    @keyframes flameFlicker {
+      0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.8; }
+      50% { transform: scale(1.2) rotate(2deg); opacity: 1; }
+    }
+
+    @keyframes powerUpPulse {
+      0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+      50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    }
+
+    .powerup {
+      position: absolute;
+      border-radius: 50%;
+      animation: powerUpPulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="spaceCanvas"></canvas>
+  <div class="nebula"></div>
+  <div class="hyperdrive" id="hyperdrive"></div>
+  <div class="rastro" id="rastro"></div>
+  <div class="rastro-core" id="rastroCore"></div>
+  <div class="flare" id="flare"></div>
+  <img id="logo" src="logo.png" alt="IndaiaFibra Logo" onclick="startGame()">
+ <p id="text1">Avalie o servi莽o da IndaiaFibra</p>
+<p id="text2">Sua opini茫o positiva ajuda outras pessoas!</p>
+  <div class="button-container">
+        <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar o servi莽o</button>
+    <button id="tipButton" onclick="openAmountModal()">Caixa de natal 馃巵</button>
+
+  </div>
+  <div class="overlay" id="overlay"></div>
+  <div id="gameOverOverlay">
+    <h2>Game Over!</h2>
+    <p>PONTUA脟脙O: <span class="score">0</span></p>
+    <ul id="top5"></ul>
+    <div id="nameInput"></div>
+    <button onclick="restartGame()">Jogar Novamente</button>
+    <button onclick="exitGame()">Sair do Jogo</button>
+    <button onclick="triggerExitSequence()">Avaliar Servi莽o</button>
+  </div>
+
+  <!-- Modal para Valores da Caixa de Natal -->
+  <div id="amountModal" class="amount-modal">
+    <div class="amount-modal-content">
+      <span class="close" onclick="closeAmountModal()">&times;</span>
+      <h2>Caixa de Natal 馃巺</h2>
+      <p>Selecione o valor da sua gorjeta de Natal</p>
+      <div class="amount-buttons" id="amountButtons">
+        <!-- Bot玫es gerados dinamicamente no JS -->
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Container da Notifica莽茫o com Logo Voando e Fundo Borrado -->
+  <div id="notificationContainer" class="notification-container">
+    <div class="notification-backdrop" id="notificationBackdrop"></div>
+    <canvas id="snowCanvas"></canvas>
+    <img id="notificationLogo" class="notification-logo" src="/papainoel.png" alt="Logo IndaiaFibra">
+    <div id="notificationMessage" class="notification-message">
+      Muito obrigado! <br><br><small>C贸digo PIX de R$ <span id="copiedTech"></span> para a Caixa de Natal foi copiado!</small><br><br>
+      <span>Abra seu aplicativo do banco</span>
+    </div>
+  </div>
+
+  <!-- Sons de fundo e efeitos -->
+  <audio id="ambientSound" src="ambient.mp3" loop volume="0.3"></audio>
+  <audio id="shootSound" src="shoot.mp3" preload="auto"></audio>
+  <audio id="explosionSound" src="explosion.mp3" preload="auto"></audio>
+  <audio id="powerupSound" src="powerup.mp3" preload="auto"></audio>
+  <audio id="shieldSound" src="shield.mp3" preload="auto"></audio>
+  <audio id="hitSound" src="hit.mp3" preload="auto"></audio>
+  <audio id="thrustSound" src="thrust.mp3" loop preload="auto"></audio>
+  <audio id="winterSound" src="winter.mp3" loop volume="0.4" preload="auto"></audio>
+
+  <script>
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx = canvas.getContext('2d');
+    const snowCanvas = document.getElementById('snowCanvas');
+    const snowCtx = snowCanvas.getContext('2d');
+    const logo = document.getElementById('logo');
+    const rastro = document.getElementById('rastro');
+    const rastroCore = document.getElementById('rastroCore');
+    const flare = document.getElementById('flare');
+    const overlay = document.getElementById('overlay');
+    const gameOverOverlay = document.getElementById('gameOverOverlay');
+    const buttonContainer = document.querySelector('.button-container');
+    const amountModal = document.getElementById('amountModal');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const notificationBackdrop = document.getElementById('notificationBackdrop');
+    const notificationLogo = document.getElementById('notificationLogo');
+    const notificationMessage = document.getElementById('notificationMessage');
+    const copiedTech = document.getElementById('copiedTech');
+    const amountButtons = document.getElementById('amountButtons');
+    const pageStartTime = Date.now();
+    let rafIdStars, rafIdParticles, rafIdGame, rafIdSnow;
+    let hyperdriveActive = false;
+    let gameActive = false;
+    let snowActive = false; // Flag para ativar anima莽茫o de neve
+    let snowExiting = false; // Flag para anima莽茫o de sa铆da da neve
+    let snowExitStartTime = 0; // Tempo de in铆cio da sa铆da
+    let snowExitDuration = 1000; // Dura莽茫o da anima莽茫o de sa铆da em ms
+    let lastTime = 0;
+    const shipImg = new Image();
+    shipImg.src = 'logo.png';
+    let shipX, shipY, shipWidth = 120, shipHeight = 120;
+    let score = 0;
+    let lives = 5;
+    let gameStartTime;
+    let keys = {};
+    let asteroids = [];
+    let powerups = [];
+    let bullets = [];
+    let thrustParticles = [];
+    let explosionParticles = [];
+    let asteroidFlames = [];
+    let powerUpLevel = 0;
+    let baseSpeed = 4;
+    let currentSpeed = baseSpeed;
+    let shieldActive = false;
+    let shieldCount = 0;
+    let shieldEndTime = 0;
+    let speedBoostEndTime = 0;
+    let touchActive = false;
+    let doubleClickTimer = 0;
+    let difficultyLevel = 0;
+    let asteroidSpawnRate = 0.03;
+    let maxAsteroidSpeed = 6;
+    let lastDifficultyIncrease = 0;
+    let isThrusting = false;
+    let wasMoving = false;
+
+    // Snowflakes array for animation
+    let snowflakes = [];
+
+    const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
+
+    // C贸digos PIX hardcoded para os valores espec铆ficos da Caixa de Natal
+    const pixCodes = {
+      10: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540510.005802BR5925Guilherme Marques dos San6009SAO PAULO621405109vkjhqw5AY6304A388',
+      25: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540525.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510fcWF8gmhd16304BB83',
+      50: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540550.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510WOF4dePBxT63040A9F',
+      100: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o5204000053039865406100.005802BR5925Guilherme Marques dos San6009SAO PAULO621405104H5w4QAno16304981F'
+    };
+
+    // Valores pr茅-definidos para Caixa de Natal
+    const amounts = [10, 25, 50, 100];
+
+    // Sons
+    const ambientSound = document.getElementById('ambientSound');
+    const shootSound = document.getElementById('shootSound');
+    const explosionSound = document.getElementById('explosionSound');
+    const powerupSound = document.getElementById('powerupSound');
+    const shieldSound = document.getElementById('shieldSound');
+    const hitSound = document.getElementById('hitSound');
+    const thrustSound = document.getElementById('thrustSound');
+    const winterSound = document.getElementById('winterSound');
+
+    // Fun莽茫o para tocar som
+    function playSound(sound) {
+      sound.currentTime = 0;
+      sound.volume = 0.5; // Volume padr茫o para efeitos
+      sound.play().catch(e => console.log('Erro ao tocar som:', e));
+    }
+
+    // Initialize snowflakes
+    function initSnowflakes() {
+      snowflakes = Array.from({ length: 100 }, () => ({
+        x: Math.random() * snowCanvas.width,
+        y: Math.random() * -snowCanvas.height,
+        size: Math.random() * 4 + 2,
+        speed: Math.random() * 2 + 0.5,
+        sway: Math.random() * 0.5 + 0.2,
+        glowIntensity: Math.random() * 10 + 5 // Intensidade do brilho aleat贸ria
+      }));
+    }
+
+    // Draw snowflakes com brilho
+    function drawSnow(currentTime) {
+      snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+
+      if (!snowActive && !snowExiting) return;
+
+      // Calcular opacidade para fade out se estiver saindo
+      let globalAlpha = 1;
+      if (snowExiting && snowExitStartTime > 0) {
+        const elapsed = currentTime - snowExitStartTime;
+        globalAlpha = Math.max(0, 1 - (elapsed / snowExitDuration));
+        if (globalAlpha <= 0) {
+          snowActive = false;
+          snowExiting = false;
+          snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+          return;
+        }
+      }
+
+      snowCtx.globalAlpha = globalAlpha;
+
+      snowflakes.forEach(flake => {
+        // Aplicar brilho
+        snowCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+        snowCtx.shadowBlur = flake.glowIntensity;
+
+        snowCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        snowCtx.beginPath();
+        snowCtx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+        snowCtx.fill();
+
+        // Pequeno brilho interno opcional
+        snowCtx.shadowBlur = flake.glowIntensity / 2;
+        snowCtx.fillStyle = 'rgba(255, 255, 255, 1)';
+        snowCtx.beginPath();
+        snowCtx.arc(flake.x, flake.y, flake.size * 0.5, 0, Math.PI * 2);
+        snowCtx.fill();
+
+        snowCtx.shadowBlur = 0; // Resetar shadow
+
+        // Update position apenas se n茫o estiver saindo (durante sa铆da, s贸 fade)
+        if (!snowExiting) {
+          flake.y += flake.speed;
+          flake.x += Math.sin(flake.y / 50) * flake.sway;
+
+          // Reset if off screen
+          if (flake.y > snowCanvas.height) {
+            flake.y = -flake.size;
+            flake.x = Math.random() * snowCanvas.width;
+          }
+        }
+      });
+
+      snowCtx.globalAlpha = 1;
+    }
+
+    function animateSnow(currentTime) {
+      drawSnow(currentTime);
+      rafIdSnow = requestAnimationFrame(animateSnow);
+    }
+
+    // Modal functions for Amount
+    function openAmountModal() {
+      amountModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      generateAmountButtons();
+    }
+
+    function closeAmountModal() {
+      amountModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Gerar bot玫es de valores dinamicamente
+    function generateAmountButtons() {
+      amountButtons.innerHTML = '';
+      amounts.forEach(am => {
+        const button = document.createElement('button');
+        button.className = 'amount-button';
+        button.innerHTML = `R$ ${am}`;
+        button.onclick = () => selectAmount(am);
+        amountButtons.appendChild(button);
+      });
+    }
+
+    // Selecionar valor pr茅-definido
+    async function selectAmount(amount) {
+      const pix = pixCodes[amount];
+      try {
+        await copyToClipboard(pix);
+        showNotification(amount);
+      } catch (err) {
+        console.error('Erro ao copiar:', err);
+        alert('Erro ao copiar o c贸digo PIX. Tente novamente.');
+      }
+      closeAmountModal();
+    }
+
+    // Fun莽茫o para mostrar notifica莽茫o com logo voando e fundo borrado
+    function showNotification(value) {
+      copiedTech.textContent = value;
+      
+      // Ativar anima莽茫o de neve aqui
+      snowActive = true;
+      snowExiting = false;
+      initSnowflakes();
+      
+      // Tocar som de inverno
+      playSound(winterSound);
+      
+      // Mostrar container
+      notificationContainer.classList.add('show');
+      
+      // Iniciar fundo escuro borrado IMEDIATAMENTE (enquanto o logo sobe)
+      notificationBackdrop.classList.add('show');
+      
+      // Iniciar anima莽茫o do logo voando
+      notificationLogo.style.opacity = '1';
+      notificationLogo.classList.add('animate');
+
+      // Ap贸s logo chegar (1.5s), mostrar mensagem
+      setTimeout(() => {
+        notificationMessage.classList.add('show');
+      }, 1500);
+
+      // Manter mensagem por 4 segundos
+      setTimeout(() => {
+        // Fade out da mensagem
+        notificationMessage.classList.remove('show');
+        
+        // Ap贸s fade out (0.5s), iniciar anima莽茫o de sa铆da da neve e esconder logo e container
+        setTimeout(() => {
+          snowExiting = true;
+          snowExitStartTime = performance.now();
+
+          notificationLogo.classList.remove('animate');
+          notificationLogo.style.opacity = '0';
+          notificationContainer.classList.remove('show');
+          notificationBackdrop.classList.remove('show'); // Esconder backdrop no final
+          
+          // Parar som de inverno no final da anima莽茫o de sa铆da
+          setTimeout(() => {
+            winterSound.pause();
+            winterSound.currentTime = 0;
+          }, snowExitDuration);
+        }, 500);
+      }, 1500 + 7000); // 1.5s logo + 4s mensagem
+    }
+
+    // Fun莽茫o para copiar para clipboard
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        // Fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    }
+
+    // Fechar modal ao clicar fora
+    window.onclick = function(event) {
+      if (event.target === amountModal) {
+        closeAmountModal();
+      }
+    }
+
+    // Cores para o rastro baseadas no powerUpLevel
+    const trailColors = {
+      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' }, // Laranja para default, fuma莽a marrom
+      1: { fire: 'hsl(200, 100%, 50%)', smoke: 'hsl(200, 50%, 60%)' },
+      2: { fire: 'hsl(60, 100%, 50%)', smoke: 'hsl(60, 50%, 70%)' },
+      3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' }
+    };
+
+    // Fun莽茫o para vibra莽茫o em dispositivos m贸veis
+    function vibrate(duration = 100) {
+      if ('vibrate' in navigator && window.matchMedia('(pointer: coarse)').matches) {
+        navigator.vibrate(duration);
+      }
+    }
+
+    async function fetchScores() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) return [];
+        return await res.json();
+      } catch (e) {
+        console.error('Erro ao buscar scores:', e);
+        return [];
+      }
+    }
+
+    async function saveScore(name, score) {
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, score })
+        });
+      } catch (e) {
+        console.error('Erro ao salvar score:', e);
+        alert('Erro ao salvar score. Tente novamente.');
+      }
+    }
+
+    async function fetchTop5(currentScore, showInput = true) {
+      const scores = await fetchScores();
+      const top = scores.sort((a, b) => b.score - a.score).slice(0, 5);
+      const topList = document.getElementById('top5');
+      topList.innerHTML = top.length ? top.map((s, i) => `<li>${i + 1}. ${s.name}: ${s.score}</li>`).join('') : '<li>Nenhum recorde ainda</li>';
+
+      const fifthScore = top[4]?.score || 0;
+      if (showInput && (currentScore > fifthScore || top.length < 5)) {
+        let inputDiv = document.getElementById('nameInput');
+        if (!inputDiv.children.length) {
+          inputDiv.innerHTML = `
+            <p style="font-size: 1.2rem; margin: 0;">Novo recorde! Insira seu nome:</p>
+            <input type="text" id="nameField" placeholder="Seu nome" maxlength="15">
+            <button onclick="saveNewScore(${currentScore})">Salvar Score</button>
+          `;
+        }
+        inputDiv.style.display = 'block';
+      } else {
+        document.getElementById('nameInput').style.display = 'none';
+      }
+
+      // Anima莽茫o legal para o Ranking TOP 5
+      setTimeout(() => {
+        topList.classList.add('animate-ranking');
+      }, 100);
+    }
+
+    function saveNewScore(currentScore) {
+      const name = document.getElementById('nameField').value.trim();
+      if (!name) {
+        alert('Nome 茅 obrigat贸rio!');
+        return;
+      }
+      saveScore(name, currentScore).then(() => {
+        const inputDiv = document.getElementById('nameInput');
+
+        // Criar mensagem de sucesso
+        const successMsg = document.createElement('p');
+        successMsg.className = 'success-message';
+        successMsg.innerHTML = '鉁� Score salvo com sucesso!';
+        successMsg.style.opacity = '0';
+        successMsg.style.transform = 'scale(0.8)';
+
+        // Adicionar 脿 div e mostrar
+        inputDiv.innerHTML = ''; // Limpa o input anterior
+        inputDiv.appendChild(successMsg);
+        inputDiv.style.display = 'block';
+
+        // Anima莽茫o de entrada
+        setTimeout(() => {
+          successMsg.classList.add('show');
+        }, 10);
+
+        // Anima莽茫o de sa铆da ap贸s 1.5s
+        setTimeout(() => {
+          successMsg.style.opacity = '0';
+          successMsg.style.transform = 'scale(1.1)';
+          setTimeout(() => {
+            inputDiv.removeChild(successMsg);
+            inputDiv.innerHTML = '';
+            inputDiv.style.display = 'none';
+            fetchTop5(currentScore, false);
+          }, 500);
+        }, 1500);
+      });
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      snowCanvas.width = window.innerWidth;
+      snowCanvas.height = window.innerHeight;
+      // Reinitialize snowflakes on resize
+      if (snowActive) initSnowflakes();
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initialize stars and snowflakes
+    const stars = Array.from({ length: 500 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 0.3,
+      speed: Math.random() * 1 + 0.2,
+      brightness: Math.random() * 0.5 + 0.5,
+      layer: Math.random() < 0.4 ? 'distant' : Math.random() < 0.6 ? 'mid' : 'near',
+      isHyper: false
+    }));
+
+    initSnowflakes();
+    animateSnow(performance.now());
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let s of stars) {
+        ctx.fillStyle = s.layer === 'distant' ? '#888' : s.layer === 'mid' ? '#bbb' : '#fff';
+        ctx.globalAlpha = s.brightness;
+        if (hyperdriveActive && s.isHyper) {
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(s.x, s.y + s.size * 20);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.lineWidth = s.size * 2;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+          s.y += s.speed * 15;
+        } else {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.layer === 'distant' ? s.size * 0.5 : s.layer === 'mid' ? s.size * 0.8 : s.size, 0, Math.PI * 2);
+          ctx.fill();
+          s.y += s.layer === 'distant' ? s.speed * 0.5 : s.layer === 'mid' ? s.speed * 0.8 : s.speed;
+        }
+        if (s.y > canvas.height) s.y = 0;
+      }
+      ctx.globalAlpha = 1;
+
+      rafIdStars = requestAnimationFrame(drawStars);
+    }
+
+    const particles = [];
+    function createParticle(x, y, isSmoke = false, customColor = null) {
+      const color = customColor || (isSmoke ? `hsl(0, 0%, ${Math.random() * 20 + 50}%)` : `hsl(${Math.random() * 40 + 20}, 100%, ${Math.random() * 30 + 50}%)`);
+      particles.push({
+        x: x + (Math.random() * 50 - 25),
+        y: y,
+        alpha: 1,
+        size: isSmoke ? Math.random() * 20 + 10 : Math.random() * 6 + 3,
+        vx: isSmoke ? Math.random() * 2 - 1 : Math.random() * 4 - 2,
+        vy: isSmoke ? Math.random() * 2 + 1 : Math.random() * 8 + 4,
+        color: color,
+        decay: isSmoke ? Math.random() * 0.01 + 0.005 : Math.random() * 0.03 + 0.02,
+        rotation: Math.random() * Math.PI * 2,
+        isSmoke
+      });
+    }
+
+    function updateParticles() {
+      const rect = logo.getBoundingClientRect();
+      for (let i = 0; i < 3; i++) createParticle(rect.left + rect.width / 2, rect.bottom - 5);
+      for (let i = 0; i < 2; i++) createParticle(rect.left + rect.width / 2, rect.bottom - 5, true);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        p.size *= p.isSmoke ? 0.98 : 0.95;
+        p.vy += 0.1;
+        p.rotation += p.isSmoke ? 0.05 : 0.1;
+        if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
+      }
+
+      particles.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 5;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        if (!p.isSmoke && Math.random() < 0.2) {
+          ctx.fillStyle = 'white';
+          ctx.globalAlpha = p.alpha * 0.7;
+          ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
+        }
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      rastro.style.left = `${rect.left + rect.width / 2 - 50}px`;
+      rastro.style.top = `${rect.bottom}px`;
+      rastroCore.style.left = `${rect.left + rect.width / 2 - 10}px`;
+      rastroCore.style.top = `${rect.bottom}px`;
+
+      rafIdParticles = requestAnimationFrame(updateParticles);
+    }
+
+    // Fun莽茫o para criar part铆culas de thrust com cor baseada no powerUpLevel e fuma莽a marrom
+    function createThrustParticle(x, y) {
+      const colors = trailColors[powerUpLevel] || trailColors[0];
+      // Fogo
+      for (let i = 0; i < 3; i++) {
+        thrustParticles.push({
+          x: x + Math.random() * 20 - 10,
+          y: y + shipHeight,
+          vx: (Math.random() - 0.5) * 5,
+          vy: Math.random() * 4 + 3,
+          size: Math.random() * 10 + 4,
+          alpha: 1,
+          color: colors.fire,
+          decay: 0.04,
+          life: 35,
+          glow: true
+        });
+      }
+      // Poeira/fuma莽a marrom
+      for (let i = 0; i < 4; i++) {
+        thrustParticles.push({
+          x: x + Math.random() * 20 - 10,
+          y: y + shipHeight,
+          vx: (Math.random() - 0.5) * 3,
+          vy: Math.random() * 3 + 1.5,
+          size: Math.random() * 8 + 3,
+          alpha: 0.8,
+          color: colors.smoke, // Marrom
+          decay: 0.025,
+          life: 45,
+          trail: true
+        });
+      }
+    }
+
+    // Update thrust particles
+    function updateThrustParticles() {
+      for (let i = thrustParticles.length - 1; i >= 0; i--) {
+        const p = thrustParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.15;
+        p.alpha -= p.decay;
+        p.size *= 0.97;
+        p.life--;
+        if (p.alpha <= 0 || p.life <= 0 || p.y > canvas.height) {
+          thrustParticles.splice(i, 1);
+        }
+      }
+    }
+
+    // Draw thrust particles
+    function drawThrustParticles() {
+      thrustParticles.forEach(p => {
+        ctx.save();
+        if (p.glow) {
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 10;
+        }
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        if (p.trail && Math.random() < 0.3) {
+          ctx.globalAlpha = p.alpha * 0.5;
+          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)'; // Marrom claro para trail
+          ctx.beginPath();
+          ctx.arc(p.x - p.vx * 2, p.y - p.vy * 2, p.size * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      ctx.shadowBlur = 0;
+    }
+
+    // Part铆culas de explos茫o marrom
+    function createExplosion(x, y, count = 8) {
+      for (let i = 0; i < count; i++) {
+        explosionParticles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10,
+          size: Math.random() * 6 + 3,
+          alpha: 1,
+          color: `hsl(20, 30%, ${Math.random() * 20 + 30}%)`, // Tons de marrom
+          decay: 0.05,
+          life: 30,
+          glow: true
+        });
+      }
+    }
+
+    function updateExplosionParticles() {
+      for (let i = explosionParticles.length - 1; i >= 0; i--) {
+        const p = explosionParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.98;
+        p.vy *= 0.98;
+        p.alpha -= p.decay;
+        p.size *= 0.95;
+        p.life--;
+        if (p.alpha <= 0 || p.life <= 0) {
+          explosionParticles.splice(i, 1);
+        }
+      }
+    }
+
+    function drawExplosionParticles() {
+      explosionParticles.forEach(p => {
+        ctx.save();
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 8;
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      ctx.shadowBlur = 0;
+    }
+
+    // Chamas para asteroides
+    function createAsteroidFlame(a) {
+      if (!a.flames) a.flames = [];
+      for (let i = 0; i < 3; i++) {
+        a.flames.push({
+          x: a.x + (Math.random() - 0.5) * a.size,
+          y: a.y + a.size / 2,
+          vx: (Math.random() - 0.5) * 2,
+          vy: Math.random() * -2 - 1,
+          size: Math.random() * 4 + 2,
+          alpha: Math.random() * 0.5 + 0.5,
+          color: `hsl(${20 + Math.random() * 40}, 100%, ${50 + Math.random() * 30}%)`,
+          life: 20 + Math.random() * 10
+        });
+      }
+    }
+
+    function updateAsteroidFlames() {
+      asteroids.forEach(a => {
+        if (a.flames) {
+          for (let i = a.flames.length - 1; i >= 0; i--) {
+            const f = a.flames[i];
+            f.x += f.vx;
+            f.y += f.vy;
+            f.vy += 0.1;
+            f.alpha -= 0.05;
+            f.life--;
+            if (f.alpha <= 0 || f.life <= 0) {
+              a.flames.splice(i, 1);
+            }
+          }
+          if (Math.random() < 0.3) createAsteroidFlame(a); // Manter chamas vivas
+        } else {
+          createAsteroidFlame(a);
+        }
+      });
+    }
+
+    function drawAsteroidFlames() {
+      asteroids.forEach(a => {
+        if (a.flames) {
+          a.flames.forEach(f => {
+            ctx.save();
+            ctx.globalAlpha = f.alpha;
+            ctx.fillStyle = f.color;
+            ctx.shadowColor = f.color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.ellipse(f.x, f.y, f.size, f.size * 1.5, 0, 0, Math.PI * 2); // Elipse para chama
+            ctx.fill();
+            ctx.restore();
+          });
+        }
+      });
+      ctx.shadowBlur = 0;
+    }
+
+    // Fun莽茫o para atirar baseada no n铆vel de power-up
+    function shoot() {
+      if (powerUpLevel === 0) return;
+
+      const shipCenterX = shipX + shipWidth / 2;
+      const shipCenterY = shipY;
+      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com n铆vel
+      const baseSize = 2 + powerUpLevel * 2; // Calibre (tamanho) aumenta
+      const color = powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000';
+
+      if (powerUpLevel === 1) {
+        // Tiro 煤nico reto
+        bullets.push({
+          x: shipCenterX,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+      } else if (powerUpLevel === 2) {
+        // Dois tiros paralelos
+        const offset = 15;
+        bullets.push({
+          x: shipCenterX - offset,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+        bullets.push({
+          x: shipCenterX + offset,
+          y: shipCenterY,
+          vx: 0,
+          vy: -baseSpeed,
+          size: baseSize,
+          color: color
+        });
+      } else if (powerUpLevel === 3) {
+        // Tr锚s tiros em spread (leque)
+        const angleSpread = Math.PI / 6; // 30 graus de spread total
+        for (let i = -1; i <= 1; i++) {
+          const angle = i * (angleSpread / 2);
+          bullets.push({
+            x: shipCenterX,
+            y: shipCenterY,
+            vx: Math.sin(angle) * baseSpeed * 0.3, // Lateral pequeno
+            vy: -Math.cos(angle) * baseSpeed,
+            size: baseSize,
+            color: color
+          });
+        }
+      }
+
+      playSound(shootSound);
+      vibrate(30 + powerUpLevel * 10); // Vibra莽茫o maior com n铆vel mais alto
+    }
+
+    // Game functions
+    function startGame() {
+      if (gameActive) return;
+      gameActive = true;
+      // Remover completamente os bot玫es principais
+      buttonContainer.style.display = 'none';
+      logo.style.opacity = '0';
+      document.querySelector('#text1').style.display = 'none';
+      document.querySelector('#text2').style.display = 'none';
+      flare.style.opacity = '0';
+      cancelAnimationFrame(rafIdStars);
+      cancelAnimationFrame(rafIdParticles);
+      particles.length = 0;
+      thrustParticles.length = 0;
+      explosionParticles.length = 0;
+      asteroidFlames = [];
+      shipX = (canvas.width - shipWidth) / 2;
+      shipY = canvas.height - shipHeight - 50;
+      score = 0;
+      lives = 5;
+      shieldCount = 0;
+      asteroids = [];
+      powerups = [];
+      bullets = [];
+      powerUpLevel = 0;
+      gameStartTime = Date.now();
+      lastDifficultyIncrease = gameStartTime;
+      difficultyLevel = 0;
+      asteroidSpawnRate = 0.01;
+      maxAsteroidSpeed = 2;
+      keys = {};
+      currentSpeed = baseSpeed;
+      shieldActive = false;
+      speedBoostEndTime = 0;
+      isThrusting = false;
+      wasMoving = false;
+      lastTime = performance.now();
+      // Iniciar som ambiente
+      ambientSound.play().catch(e => console.log('Erro ao tocar som ambiente:', e));
+      gameLoop(lastTime);
+    }
+
+    function gameLoop(currentTime) {
+      if (!gameActive) {
+        rafIdGame = requestAnimationFrame(gameLoop);
+        return;
+      }
+      const deltaTime = (currentTime - lastTime) / 16.67;
+      lastTime = currentTime;
+
+      const gameTime = Date.now() - gameStartTime;
+      const newLevel = Math.floor(gameTime / 10000);
+      if (newLevel > difficultyLevel) {
+        difficultyLevel = newLevel;
+        asteroidSpawnRate += 0.005;
+        maxAsteroidSpeed += 1;
+      }
+
+      if (Date.now() > speedBoostEndTime) currentSpeed = baseSpeed;
+      else currentSpeed = baseSpeed * 1.5;
+      if (Date.now() > shieldEndTime) {
+        shieldCount = 0;
+        shieldActive = false;
+      } else {
+        shieldActive = shieldCount > 0;
+      }
+
+      let moving = false;
+      const speed = currentSpeed * deltaTime * (window.innerWidth > 768 ? 1 : 0.8);
+      if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+        shipX = Math.max(0, shipX - speed);
+        moving = true;
+      }
+      if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+        shipX = Math.min(canvas.width - shipWidth, shipX + speed);
+        moving = true;
+      }
+      if (keys['ArrowUp'] || keys['w'] || keys['W']) {
+        shipY = Math.max(0, shipY - speed);
+        moving = true;
+      }
+      if (keys['ArrowDown'] || keys['s'] || keys['S']) {
+        shipY = Math.min(canvas.height - shipHeight, shipY + speed);
+        moving = true;
+      }
+
+      // Gerenciar som de thrust
+      if (moving) {
+        if (!isThrusting) {
+          thrustSound.volume = 0.3;
+          thrustSound.play().catch(e => console.log('Erro ao tocar thrust:', e));
+          isThrusting = true;
+        }
+        if (!wasMoving && Math.random() < 0.6) {
+          createThrustParticle(shipX + shipWidth / 2, shipY);
+        }
+      } else {
+        if (isThrusting) {
+          thrustSound.pause();
+          thrustSound.currentTime = 0;
+          isThrusting = false;
+        }
+      }
+      wasMoving = moving;
+
+      // Atirar baseado no powerUpLevel
+      if (keys[' '] && powerUpLevel > 0) {
+        shoot();
+        keys[' '] = false;
+      }
+
+      for (let s of stars) {
+        const layerSpeed = (s.layer === 'distant' ? s.speed * 0.5 : s.layer === 'mid' ? s.speed * 0.8 : s.speed) * 1.2 * deltaTime;
+        s.y += layerSpeed;
+        if (s.y > canvas.height) s.y = 0;
+        const dx = s.x - (shipX + shipWidth / 2);
+        const dy = s.y - (shipY + shipHeight / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < s.size + shipWidth / 4) {
+          score += 10;
+          s.x = Math.random() * canvas.width;
+          s.y = -10;
+        }
+      }
+
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        let b = bullets[i];
+        b.x += b.vx * deltaTime;
+        b.y += b.vy * deltaTime;
+        if (b.y < 0) {
+          bullets.splice(i, 1);
+          continue;
+        }
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+          let a = asteroids[j];
+          const bdx = b.x - a.x;
+          const bdy = b.y - a.y;
+          const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
+          if (bdist < b.size + a.size) {
+            score += 20 * powerUpLevel; // Pontos extras baseado no n铆vel
+            bullets.splice(i, 1);
+            createExplosion(a.x, a.y, 12); // Explos茫o marrom
+            playSound(explosionSound);
+            vibrate(50); // Vibra莽茫o no acerto
+            asteroids.splice(j, 1);
+            break;
+          }
+        }
+      }
+
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        let a = asteroids[i];
+        a.y += a.speed * deltaTime;
+        if (a.y > canvas.height) {
+          asteroids.splice(i, 1);
+          continue;
+        }
+        const dx = a.x - (shipX + shipWidth / 2);
+        const dy = a.y - (shipY + shipHeight / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < a.size + shipWidth / 4) {
+          if (shieldCount > 0) {
+            shieldCount--;
+            createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
+            playSound(shieldSound);
+            vibrate(100); // Vibra莽茫o no bloqueio de escudo
+            asteroids.splice(i, 1);
+          } else {
+            lives--;
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explos茫o no impacto
+            playSound(hitSound);
+            vibrate(200); // Vibra莽茫o forte no impacto
+            asteroids.splice(i, 1);
+            if (lives <= 0) {
+              endGame();
+              return;
+            }
+          }
+        }
+      }
+
+      for (let i = powerups.length - 1; i >= 0; i--) {
+        let p = powerups[i];
+        p.y += p.speed * deltaTime;
+        if (p.y > canvas.height) {
+          powerups.splice(i, 1);
+          continue;
+        }
+        const dx = p.x - (shipX + shipWidth / 2);
+        const dy = p.y - (shipY + shipHeight / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < p.size + shipWidth / 4) {
+          powerUpLevel = Math.min(3, powerUpLevel + 1);
+          applyPowerUp(p.type);
+          powerups.splice(i, 1);
+          playSound(powerupSound);
+          vibrate(150); // Vibra莽茫o no power-up
+          for (let k = 0; k < 6; k++) {
+            createParticle(p.x, p.y, false);
+          }
+        }
+      }
+
+      if (Math.random() < asteroidSpawnRate * deltaTime) {
+        asteroids.push({
+          x: Math.random() * canvas.width,
+          y: 0,
+          size: Math.random() * 20 + 15,
+          speed: Math.random() * maxAsteroidSpeed + 3,
+          flames: []
+        });
+      }
+
+      if (Math.random() < 0.002 * deltaTime) {
+        const types = ['speed', 'shield', 'life'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        powerups.push({
+          x: Math.random() * canvas.width,
+          y: 0,
+          size: 12,
+          speed: Math.random() * 2 + 1,
+          type: type
+        });
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let s of stars) {
+        ctx.fillStyle = s.layer === 'distant' ? '#888' : s.layer === 'mid' ? '#bbb' : '#fff';
+        ctx.globalAlpha = s.brightness;
+        const r = s.layer === 'distant' ? s.size * 0.5 : s.layer === 'mid' ? s.size * 0.8 : s.size;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // Draw asteroid flames
+      updateAsteroidFlames();
+      drawAsteroidFlames();
+
+      // Draw asteroids com emoji 馃 e chamas
+      ctx.shadowColor = 'rgba(139, 69, 19, 0.8)';
+      ctx.shadowBlur = 10;
+      ctx.font = 'bold 20px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let a of asteroids) {
+        ctx.font = `bold ${a.size * 1.2}px Arial, sans-serif`;
+        ctx.fillStyle = '#8B4513';
+        ctx.fillText('馃', a.x, a.y);
+      }
+      ctx.shadowBlur = 0;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+
+      bullets.forEach(b => {
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.rect(b.x - b.size / 2, b.y - b.size * 2, b.size, b.size * 4);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      // Draw powerups com 铆cones bonitos (emojis) e anima莽茫o radial
+      for (let p of powerups) {
+        const pulseSize = p.size + Math.sin(Date.now() / 200) * 2;
+        ctx.shadowColor = p.type === 'speed' ? '#00ffff' : p.type === 'shield' ? '#00ff00' : '#8000ff';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = p.type === 'speed' ? 'rgba(0, 255, 255, 0.9)' : p.type === 'shield' ? 'rgba(0, 255, 0, 0.9)' : 'rgba(128, 0, 255, 0.9)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.font = `${Math.min(16, canvas.width / 60)}px Arial, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const icon = p.type === 'speed' ? '馃殌' : p.type === 'shield' ? '馃洝锔�' : '鉂わ笍';
+        ctx.fillText(icon, p.x, p.y);
+      }
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+
+      drawThrustParticles();
+      updateThrustParticles();
+
+      updateExplosionParticles();
+      drawExplosionParticles();
+
+      // Part铆culas de exaust茫o como na intro (sempre ativas durante o jogo, igual 脿 anima莽茫o inicial)
+      const exhaustX = shipX + shipWidth / 2;
+      const exhaustY = shipY + shipHeight;
+      // Sempre criar part铆culas para simular thrust constante, mais vis铆vel
+      for (let i = 0; i < 5; i++) { // Aumentado para 5 para mais visibilidade
+        createParticle(exhaustX, exhaustY - 5);
+      }
+      for (let i = 0; i < 1; i++) { // Diminu铆do para 1 para menos fuma莽a
+        createParticle(exhaustX, exhaustY - 5, true);
+      }
+
+      // Atualizar part铆culas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e vis铆veis
+        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para part铆culas maiores por mais tempo
+        p.vy += 0.1;
+        p.rotation += p.isSmoke ? 0.05 : 0.1;
+        if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
+      }
+
+      // Desenhar part铆culas
+      particles.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 8; // Aumentado blur para mais glow
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        if (!p.isSmoke && Math.random() < 0.3) { // Aumentada chance de brilho
+          ctx.fillStyle = 'white';
+          ctx.globalAlpha = p.alpha * 0.8;
+          ctx.fillRect(-p.size / 4, -p.size / 4, p.size / 2, p.size / 2);
+        }
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      // Posicionar rastro abaixo da nave
+      rastro.style.left = `${exhaustX - 50}px`;
+      rastro.style.top = `${exhaustY}px`;
+      rastroCore.style.left = `${exhaustX - 10}px`;
+      rastroCore.style.top = `${exhaustY}px`;
+
+      // Cores do escudo baseadas na quantidade
+      let shieldColor = 'rgba(21, 94, 183, 1)';
+      if (shieldCount === 1) {
+        shieldColor = 'rgba(0, 255, 0, 1)'; // Verde
+      } else if (shieldCount === 2) {
+        shieldColor = 'rgba(128, 0, 128, 1)'; // Roxo
+      } else if (shieldCount === 3) {
+        shieldColor = 'rgba(0, 0, 255, 1)'; // Azul
+      }
+      ctx.shadowColor = shieldActive ? shieldColor : 'rgba(21, 94, 183, 1)';
+      ctx.shadowBlur = shieldActive ? 30 : 20;
+      if (shipImg.complete) {
+        ctx.drawImage(shipImg, shipX, shipY, shipWidth, shipHeight);
+      }
+      ctx.shadowBlur = 0;
+
+      const uiScale = window.innerWidth > 768 ? 1 : 0.8;
+      ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+      ctx.shadowBlur = 5;
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${Math.min(24, canvas.width / 30) * uiScale}px 'Poppins', sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.fillText(`PONTOS: ${score}`, 20, 40);
+      ctx.fillText(`VIDAS: ${'鉂わ笍'.repeat(lives)}`, 20, 70);
+      ctx.fillText(`PODERES: ${powerUpLevel}`, 20, 100);
+      ctx.fillText(`ESCUDOS: ${'馃洝锔�'.repeat(shieldCount)}`, 20, 130);
+      ctx.shadowBlur = 0;
+      ctx.textAlign = 'left';
+
+      rafIdGame = requestAnimationFrame(gameLoop);
+    }
+
+    function applyPowerUp(type) {
+      const currentTime = Date.now();
+      if (type === 'speed') {
+        speedBoostEndTime = currentTime + 5000;
+      } else if (type === 'shield') {
+        shieldCount = Math.min(3, shieldCount + 1);
+        shieldEndTime = currentTime + 5000;
+        shieldActive = true;
+      } else if (type === 'life') {
+        lives = Math.min(5, lives + 1); // M谩ximo 5 vidas
+      }
+    }
+
+    function endGame(forceResume = false) {
+      gameActive = false;
+      cancelAnimationFrame(rafIdGame);
+      thrustSound.pause();
+      thrustSound.currentTime = 0;
+      isThrusting = false;
+      rafIdStars = requestAnimationFrame(drawStars);
+      rafIdParticles = requestAnimationFrame(updateParticles);
+      logo.style.opacity = '1';
+      if (!forceResume) {
+        // Exibir score primeiro com anima莽茫o
+        gameOverOverlay.style.display = 'flex';
+        gameOverOverlay.style.opacity = '0';
+        setTimeout(() => {
+          gameOverOverlay.style.opacity = '1';
+          gameOverOverlay.classList.add('show');
+          const scoreEl = gameOverOverlay.querySelector('.score');
+          scoreEl.style.opacity = '0';
+          scoreEl.style.transform = 'scale(0.5)';
+          scoreEl.style.transition = 'all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1)';
+          scoreEl.textContent = score;
+          setTimeout(() => {
+            scoreEl.style.opacity = '1';
+            scoreEl.style.transform = 'scale(1)';
+          }, 100);
+        }, 300);
+
+        // Ap贸s exibir score, anima莽茫o para o Ranking TOP 5
+        setTimeout(() => {
+          fetchTop5(score);
+        }, 2000);
+      } else {
+        gameOverOverlay.style.display = 'none';
+        buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo ap贸s game over
+        buttonContainer.style.opacity = '1';
+      }
+    }
+
+    function restartGame() {
+      gameOverOverlay.style.display = 'none';
+      gameOverOverlay.classList.remove('show');
+      document.getElementById('nameInput').style.display = 'none';
+      document.getElementById('nameInput').innerHTML = ''; // Limpa o conte煤do ao reiniciar
+      document.getElementById('top5').classList.remove('animate-ranking');
+      startGame();
+    }
+
+    function exitGame() {
+      endGame(true);
+      ambientSound.pause();
+      ambientSound.currentTime = 0;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        if (!gameActive) {
+          startGame();
+        }
+      } else if (e.key === 'Escape' && gameActive) {
+        endGame(true);
+      } else if (gameActive) {
+        keys[e.key] = true;
+        if (e.key === ' ') e.preventDefault();
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (gameActive) {
+        keys[e.key] = false;
+      }
+    });
+
+    document.addEventListener('touchstart', (e) => {
+      if (gameActive) {
+        e.preventDefault();
+        touchActive = true;
+        updateShipPos(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchmove', (e) => {
+      if (gameActive && touchActive) {
+        e.preventDefault();
+        updateShipPos(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
+      if (gameActive) {
+        touchActive = false;
+        const now = Date.now();
+        if (now - doubleClickTimer < 300) {
+          shoot();
+        }
+        doubleClickTimer = now;
+      }
+    }, { passive: false });
+
+    function updateShipPos(tx, ty) {
+      shipX = Math.max(0, Math.min(canvas.width - shipWidth, tx - shipWidth / 2));
+      shipY = Math.max(0, Math.min(canvas.height - shipHeight, ty - shipHeight / 2));
+      // Atualizar rastro durante toque
+      const exhaustX = shipX + shipWidth / 2;
+      const exhaustY = shipY + shipHeight;
+      rastro.style.left = `${exhaustX - 50}px`;
+      rastro.style.top = `${exhaustY}px`;
+      rastroCore.style.left = `${exhaustX - 10}px`;
+      rastroCore.style.top = `${exhaustY}px`;
+    }
+
+    document.addEventListener('dblclick', (e) => {
+      if (gameActive && powerUpLevel > 0) {
+        e.preventDefault();
+        shoot();
+      }
+    });
+
+    // Removido o event listener de double-click no logo, agora 茅 single-click direto via onclick no HTML
+
+    function triggerExitSequence() {
+      logo.style.animation = 'zoomLogo 2s ease-in forwards';
+      canvas.style.animation = 'cameraZoom 2s ease-in forwards';
+      hyperdriveActive = true;
+      stars.forEach(s => s.isHyper = Math.random() < 0.8);
+      document.getElementById('hyperdrive').style.opacity = '0.6';
+      buttonContainer.style.display = 'none';
+
+      setTimeout(() => {
+        document.querySelector('#text1').style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        document.querySelector('#text2').style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        document.querySelector('#text1').style.opacity = '0';
+        document.querySelector('#text2').style.opacity = '0';
+        document.querySelector('#text1').style.transform = 'translateY(30px)';
+        document.querySelector('#text2').style.transform = 'translateY(30px)';
+      }, 1000);
+
+      setTimeout(() => {
+        overlay.style.opacity = '0.5';
+        setTimeout(() => {
+          overlay.style.opacity = '1';
+        }, 300);
+      }, 2500);
+
+      // Redirecionamento direto, sem timeout
+      window.open(
+        'https://search.google.com/local/writereview?placeid=ChIJj8QLZ3VNz5QR6fyhf_lxpkM',
+        '_blank'
+      );
+    }
+
+    setTimeout(() => {
+      const rect = logo.getBoundingClientRect();
+      flare.style.left = `${rect.left + rect.width / 2 - 100}px`;
+      flare.style.top = `${rect.top + rect.height / 2 - 100}px`;
+      flare.style.animation = 'flareEffect 0.5s ease-out forwards';
+    }, 1000);
+
+    rafIdStars = requestAnimationFrame(drawStars);
+    rafIdParticles = requestAnimationFrame(updateParticles);
+  </script>
+</body>
+</html>
