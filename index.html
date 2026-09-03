@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>IndaiaFibra - Avalia莽茫o</title>
+  <title>IndaiaFibra - Avaliação</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -176,9 +176,9 @@
       backdrop-filter: blur(8px);
     }
 
-    /* Estilo espec铆fico para o bot茫o de gorjeta - mais simples e acolhedor */
+    /* Estilo específico para o botão de gorjeta - mais simples e acolhedor */
     #tipButton {
-      display: none; /* Bot茫o oculto permanentemente */
+      display: none; /* Botão oculto permanentemente */
       background: linear-gradient(45deg, #FF0707, #D3CDC5);
       box-shadow: 0 4px 15px rgba(40, 36, 36, 0.3);
       display: flex;
@@ -243,7 +243,7 @@
     }
 
     #playButton {
-      display: none; /* Bot茫o "Jogar" oculto permanentemente */
+      display: none; /* Botão "Jogar" oculto permanentemente */
     }
 
     .overlay {
@@ -379,17 +379,17 @@
     }
 
     #top5 li:nth-child(1)::before {
-      content: '馃 ';
+      content: '🥇 ';
       font-size: 1.1em;
     }
 
     #top5 li:nth-child(2)::before {
-      content: '馃 ';
+      content: '🥈 ';
       font-size: 1.1em;
     }
 
     #top5 li:nth-child(3)::before {
-      content: '馃 ';
+      content: '🥉 ';
       font-size: 1.1em;
     }
 
@@ -505,11 +505,11 @@
       }
 
       #playButton {
-        display: none; /* Mantido oculto em mobile tamb茅m */
+        display: none; /* Mantido oculto em mobile também */
       }
 
       #tipButton {
-        display: none; /* Oculto em mobile tamb茅m */
+        display: none; /* Oculto em mobile também */
         font-size: 1.4rem;
         padding: 15px 30px;
         min-width: 250px;
@@ -705,7 +705,7 @@
       background: linear-gradient(45deg, #20c997, #28a745);
     }
 
-    /* Container para a notifica莽茫o com logo voando */
+    /* Container para a notificação com logo voando */
     .notification-container {
       position: fixed;
       top: 0;
@@ -723,7 +723,7 @@
       display: flex;
     }
 
-    /* Fundo escuro borrado durante a exibi莽茫o da mensagem */
+    /* Fundo escuro borrado durante a exibição da mensagem */
     .notification-backdrop {
       position: absolute;
       top: 0;
@@ -740,20 +740,20 @@
       opacity: 1;
     }
 
-/* Logo voando na notifica莽茫o - posicionado no topo */
+/* Logo voando na notificação - posicionado no topo */
 .notification-logo {
   position: absolute;
   top: 0; /* Alterado para encostar no topo da tela */
   left: 50%;
-  transform: translateX(-50%) translateY(-150vh) scale(0.5); /* In铆cio acima da tela para "queda" */
-  width: min(50vw, 1024px); /* 50% da largura da viewport, m谩ximo 1024px */
-  height: auto; /* Manter propor莽茫o */
+  transform: translateX(-50%) translateY(-150vh) scale(0.5); /* Início acima da tela para "queda" */
+  width: min(50vw, 1024px); /* 50% da largura da viewport, máximo 1024px */
+  height: auto; /* Manter proporção */
   filter: drop-shadow(0 0 30px rgba(183, 21, 21, 1));
   z-index: 101;
   opacity: 0;
 }
 
-    /* Anima莽茫o ajustada para o logo caindo com quique no topo */
+    /* Animação ajustada para o logo caindo com quique no topo */
     @keyframes notificationLogoEntrance {
       0% { 
         transform: translateX(-50%) translateY(-150vh) scale(0.5); 
@@ -775,7 +775,7 @@
       animation: notificationLogoEntrance 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
     }
 
-    /* Mensagem da notifica莽茫o - centralizada abaixo do logo - DIV MAIOR */
+    /* Mensagem da notificação - centralizada abaixo do logo - DIV MAIOR */
     .notification-message {
       position: absolute;
       top: 30%; /* Ajustado para ficar abaixo do logo no topo (considerando altura da imagem ~150px) */
@@ -792,7 +792,7 @@
       text-align: center;
       font-weight: 600;
       font-size: 1.1rem; /* Fonte ligeiramente maior */
-      max-width: 85%; /* Largura m谩xima aumentada */
+      max-width: 85%; /* Largura máxima aumentada */
       z-index: 102;
     }
 
@@ -801,11 +801,11 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    /* Efeitos especiais do canvas durante a notifica莽茫o - aumentar intensidade */
+    /* Efeitos especiais do canvas durante a notificação - aumentar intensidade */
     .notification-container.show ~ #spaceCanvas,
     .notification-container.show ~ .nebula,
     .notification-container.show ~ #spaceCanvas::before {
-      animation-duration: 0.5s !important; /* Acelerar anima莽玫es para mais dinamismo */
+      animation-duration: 0.5s !important; /* Acelerar animações para mais dinamismo */
       opacity: 0.8 !important;
     }
 
@@ -842,7 +842,7 @@
       }
 
       .notification-message {
-        padding: 20px 30px; /* Padding maior em mobile tamb茅m */
+        padding: 20px 30px; /* Padding maior em mobile também */
         max-width: 90%;
         font-size: 1rem; /* Fonte ajustada para mobile */
         top: 35%; /* Ajuste para mobile, logo em top:0 */
@@ -850,7 +850,7 @@
 
       .notification-logo {
         top: 0; /* Mantido no topo em mobile */
-        /* width j谩 茅 responsivo com min(50vw, 1024px) */
+        /* width já é responsivo com min(50vw, 1024px) */
       }
 
       .notification-container.show ~ canvas {
@@ -985,45 +985,45 @@
   <div class="rastro-core" id="rastroCore"></div>
   <div class="flare" id="flare"></div>
   <img id="logo" src="logo.png" alt="IndaiaFibra Logo" onclick="startGame()">
- <p id="text1">Avalie o servi莽o da IndaiaFibra</p>
-<p id="text2">Sua opini茫o positiva ajuda outras pessoas!</p>
+ <p id="text1">Avalie o serviço da IndaiaFibra</p>
+<p id="text2">Sua opinião positiva ajuda outras pessoas!</p>
   <div class="button-container">
-        <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar o servi莽o</button>
-    <button id="tipButton" onclick="openAmountModal()">Caixa de natal 馃巵</button>
+        <button id="evaluateButton" onclick="triggerExitSequence()">Avaliar o serviço</button>
+    <button id="tipButton" onclick="openAmountModal()">Caixa de natal 🎁</button>
 
   </div>
   <div class="overlay" id="overlay"></div>
   <div id="gameOverOverlay">
     <h2>Game Over!</h2>
-    <p>PONTUA脟脙O: <span class="score">0</span></p>
+    <p>PONTUAÇÃO: <span class="score">0</span></p>
     <ul id="top5"></ul>
     <div id="nameInput"></div>
     <button onclick="restartGame()">Jogar Novamente</button>
     <button onclick="exitGame()">Sair do Jogo</button>
-    <button onclick="triggerExitSequence()">Avaliar Servi莽o</button>
+    <button onclick="triggerExitSequence()">Avaliar Serviço</button>
   </div>
 
   <!-- Modal para Valores da Caixa de Natal -->
   <div id="amountModal" class="amount-modal">
     <div class="amount-modal-content">
       <span class="close" onclick="closeAmountModal()">&times;</span>
-      <h2>Caixa de Natal 馃巺</h2>
+      <h2>Caixa de Natal 🎅</h2>
       <p>Selecione o valor da sua gorjeta de Natal</p>
       <div class="amount-buttons" id="amountButtons">
-        <!-- Bot玫es gerados dinamicamente no JS -->
+        <!-- Botões gerados dinamicamente no JS -->
       </div>
     </div>
   </div>
 
 
 
-  <!-- Container da Notifica莽茫o com Logo Voando e Fundo Borrado -->
+  <!-- Container da Notificação com Logo Voando e Fundo Borrado -->
   <div id="notificationContainer" class="notification-container">
     <div class="notification-backdrop" id="notificationBackdrop"></div>
     <canvas id="snowCanvas"></canvas>
     <img id="notificationLogo" class="notification-logo" src="/papainoel.png" alt="Logo IndaiaFibra">
     <div id="notificationMessage" class="notification-message">
-      Muito obrigado! <br><br><small>C贸digo PIX de R$ <span id="copiedTech"></span> para a Caixa de Natal foi copiado!</small><br><br>
+      Muito obrigado! <br><br><small>Código PIX de R$ <span id="copiedTech"></span> para a Caixa de Natal foi copiado!</small><br><br>
       <span>Abra seu aplicativo do banco</span>
     </div>
   </div>
@@ -1061,10 +1061,10 @@
     let rafIdStars, rafIdParticles, rafIdGame, rafIdSnow;
     let hyperdriveActive = false;
     let gameActive = false;
-    let snowActive = false; // Flag para ativar anima莽茫o de neve
-    let snowExiting = false; // Flag para anima莽茫o de sa铆da da neve
-    let snowExitStartTime = 0; // Tempo de in铆cio da sa铆da
-    let snowExitDuration = 1000; // Dura莽茫o da anima莽茫o de sa铆da em ms
+    let snowActive = false; // Flag para ativar animação de neve
+    let snowExiting = false; // Flag para animação de saída da neve
+    let snowExitStartTime = 0; // Tempo de início da saída
+    let snowExitDuration = 1000; // Duração da animação de saída em ms
     let lastTime = 0;
     const shipImg = new Image();
     shipImg.src = 'logo.png';
@@ -1100,15 +1100,15 @@
 
     const API_URL = 'https://68f458d8b16eb6f46834542c.mockapi.io/Rexord/Pomtos';
 
-    // C贸digos PIX hardcoded para os valores espec铆ficos da Caixa de Natal
+    // Códigos PIX hardcoded para os valores específicos da Caixa de Natal
     const pixCodes = {
-      10: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540510.005802BR5925Guilherme Marques dos San6009SAO PAULO621405109vkjhqw5AY6304A388',
-      25: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540525.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510fcWF8gmhd16304BB83',
-      50: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o520400005303986540550.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510WOF4dePBxT63040A9F',
-      100: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu servi莽o5204000053039865406100.005802BR5925Guilherme Marques dos San6009SAO PAULO621405104H5w4QAno16304981F'
+      10: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540510.005802BR5925Guilherme Marques dos San6009SAO PAULO621405109vkjhqw5AY6304A388',
+      25: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540525.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510fcWF8gmhd16304BB83',
+      50: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço520400005303986540550.005802BR5925Guilherme Marques dos San6009SAO PAULO62140510WOF4dePBxT63040A9F',
+      100: '00020126720014BR.GOV.BCB.PIX0111398927978500235Obrigado por confiar em meu serviço5204000053039865406100.005802BR5925Guilherme Marques dos San6009SAO PAULO621405104H5w4QAno16304981F'
     };
 
-    // Valores pr茅-definidos para Caixa de Natal
+    // Valores pré-definidos para Caixa de Natal
     const amounts = [10, 25, 50, 100];
 
     // Sons
@@ -1121,10 +1121,10 @@
     const thrustSound = document.getElementById('thrustSound');
     const winterSound = document.getElementById('winterSound');
 
-    // Fun莽茫o para tocar som
+    // Função para tocar som
     function playSound(sound) {
       sound.currentTime = 0;
-      sound.volume = 0.5; // Volume padr茫o para efeitos
+      sound.volume = 0.5; // Volume padrão para efeitos
       sound.play().catch(e => console.log('Erro ao tocar som:', e));
     }
 
@@ -1136,7 +1136,7 @@
         size: Math.random() * 4 + 2,
         speed: Math.random() * 2 + 0.5,
         sway: Math.random() * 0.5 + 0.2,
-        glowIntensity: Math.random() * 10 + 5 // Intensidade do brilho aleat贸ria
+        glowIntensity: Math.random() * 10 + 5 // Intensidade do brilho aleatória
       }));
     }
 
@@ -1180,7 +1180,7 @@
 
         snowCtx.shadowBlur = 0; // Resetar shadow
 
-        // Update position apenas se n茫o estiver saindo (durante sa铆da, s贸 fade)
+        // Update position apenas se não estiver saindo (durante saída, só fade)
         if (!snowExiting) {
           flake.y += flake.speed;
           flake.x += Math.sin(flake.y / 50) * flake.sway;
@@ -1213,7 +1213,7 @@
       document.body.style.overflow = 'auto';
     }
 
-    // Gerar bot玫es de valores dinamicamente
+    // Gerar botões de valores dinamicamente
     function generateAmountButtons() {
       amountButtons.innerHTML = '';
       amounts.forEach(am => {
@@ -1225,7 +1225,7 @@
       });
     }
 
-    // Selecionar valor pr茅-definido
+    // Selecionar valor pré-definido
     async function selectAmount(amount) {
       const pix = pixCodes[amount];
       try {
@@ -1233,16 +1233,16 @@
         showNotification(amount);
       } catch (err) {
         console.error('Erro ao copiar:', err);
-        alert('Erro ao copiar o c贸digo PIX. Tente novamente.');
+        alert('Erro ao copiar o código PIX. Tente novamente.');
       }
       closeAmountModal();
     }
 
-    // Fun莽茫o para mostrar notifica莽茫o com logo voando e fundo borrado
+    // Função para mostrar notificação com logo voando e fundo borrado
     function showNotification(value) {
       copiedTech.textContent = value;
       
-      // Ativar anima莽茫o de neve aqui
+      // Ativar animação de neve aqui
       snowActive = true;
       snowExiting = false;
       initSnowflakes();
@@ -1256,11 +1256,11 @@
       // Iniciar fundo escuro borrado IMEDIATAMENTE (enquanto o logo sobe)
       notificationBackdrop.classList.add('show');
       
-      // Iniciar anima莽茫o do logo voando
+      // Iniciar animação do logo voando
       notificationLogo.style.opacity = '1';
       notificationLogo.classList.add('animate');
 
-      // Ap贸s logo chegar (1.5s), mostrar mensagem
+      // Após logo chegar (1.5s), mostrar mensagem
       setTimeout(() => {
         notificationMessage.classList.add('show');
       }, 1500);
@@ -1270,7 +1270,7 @@
         // Fade out da mensagem
         notificationMessage.classList.remove('show');
         
-        // Ap贸s fade out (0.5s), iniciar anima莽茫o de sa铆da da neve e esconder logo e container
+        // Após fade out (0.5s), iniciar animação de saída da neve e esconder logo e container
         setTimeout(() => {
           snowExiting = true;
           snowExitStartTime = performance.now();
@@ -1280,7 +1280,7 @@
           notificationContainer.classList.remove('show');
           notificationBackdrop.classList.remove('show'); // Esconder backdrop no final
           
-          // Parar som de inverno no final da anima莽茫o de sa铆da
+          // Parar som de inverno no final da animação de saída
           setTimeout(() => {
             winterSound.pause();
             winterSound.currentTime = 0;
@@ -1289,7 +1289,7 @@
       }, 1500 + 7000); // 1.5s logo + 4s mensagem
     }
 
-    // Fun莽茫o para copiar para clipboard
+    // Função para copiar para clipboard
     async function copyToClipboard(text) {
       try {
         await navigator.clipboard.writeText(text);
@@ -1313,13 +1313,13 @@
 
     // Cores para o rastro baseadas no powerUpLevel
     const trailColors = {
-      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' }, // Laranja para default, fuma莽a marrom
+      0: { fire: 'hsl(20, 100%, 50%)', smoke: 'hsl(20, 20%, 50%)' }, // Laranja para default, fumaça marrom
       1: { fire: 'hsl(200, 100%, 50%)', smoke: 'hsl(200, 50%, 60%)' },
       2: { fire: 'hsl(60, 100%, 50%)', smoke: 'hsl(60, 50%, 70%)' },
       3: { fire: 'hsl(340, 100%, 50%)', smoke: 'hsl(340, 50%, 60%)' }
     };
 
-    // Fun莽茫o para vibra莽茫o em dispositivos m贸veis
+    // Função para vibração em dispositivos móveis
     function vibrate(duration = 100) {
       if ('vibrate' in navigator && window.matchMedia('(pointer: coarse)').matches) {
         navigator.vibrate(duration);
@@ -1371,7 +1371,7 @@
         document.getElementById('nameInput').style.display = 'none';
       }
 
-      // Anima莽茫o legal para o Ranking TOP 5
+      // Animação legal para o Ranking TOP 5
       setTimeout(() => {
         topList.classList.add('animate-ranking');
       }, 100);
@@ -1380,7 +1380,7 @@
     function saveNewScore(currentScore) {
       const name = document.getElementById('nameField').value.trim();
       if (!name) {
-        alert('Nome 茅 obrigat贸rio!');
+        alert('Nome é obrigatório!');
         return;
       }
       saveScore(name, currentScore).then(() => {
@@ -1389,21 +1389,21 @@
         // Criar mensagem de sucesso
         const successMsg = document.createElement('p');
         successMsg.className = 'success-message';
-        successMsg.innerHTML = '鉁� Score salvo com sucesso!';
+        successMsg.innerHTML = '✅ Score salvo com sucesso!';
         successMsg.style.opacity = '0';
         successMsg.style.transform = 'scale(0.8)';
 
-        // Adicionar 脿 div e mostrar
+        // Adicionar à div e mostrar
         inputDiv.innerHTML = ''; // Limpa o input anterior
         inputDiv.appendChild(successMsg);
         inputDiv.style.display = 'block';
 
-        // Anima莽茫o de entrada
+        // Animação de entrada
         setTimeout(() => {
           successMsg.classList.add('show');
         }, 10);
 
-        // Anima莽茫o de sa铆da ap贸s 1.5s
+        // Animação de saída após 1.5s
         setTimeout(() => {
           successMsg.style.opacity = '0';
           successMsg.style.transform = 'scale(1.1)';
@@ -1529,7 +1529,7 @@
       rafIdParticles = requestAnimationFrame(updateParticles);
     }
 
-    // Fun莽茫o para criar part铆culas de thrust com cor baseada no powerUpLevel e fuma莽a marrom
+    // Função para criar partículas de thrust com cor baseada no powerUpLevel e fumaça marrom
     function createThrustParticle(x, y) {
       const colors = trailColors[powerUpLevel] || trailColors[0];
       // Fogo
@@ -1547,7 +1547,7 @@
           glow: true
         });
       }
-      // Poeira/fuma莽a marrom
+      // Poeira/fumaça marrom
       for (let i = 0; i < 4; i++) {
         thrustParticles.push({
           x: x + Math.random() * 20 - 10,
@@ -1605,7 +1605,7 @@
       ctx.shadowBlur = 0;
     }
 
-    // Part铆culas de explos茫o marrom
+    // Partículas de explosão marrom
     function createExplosion(x, y, count = 8) {
       for (let i = 0; i < count; i++) {
         explosionParticles.push({
@@ -1711,18 +1711,18 @@
       ctx.shadowBlur = 0;
     }
 
-    // Fun莽茫o para atirar baseada no n铆vel de power-up
+    // Função para atirar baseada no nível de power-up
     function shoot() {
       if (powerUpLevel === 0) return;
 
       const shipCenterX = shipX + shipWidth / 2;
       const shipCenterY = shipY;
-      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com n铆vel
+      const baseSpeed = 10 + powerUpLevel * 5; // Velocidade base aumenta com nível
       const baseSize = 2 + powerUpLevel * 2; // Calibre (tamanho) aumenta
       const color = powerUpLevel === 1 ? '#00ffff' : powerUpLevel === 2 ? '#ffff00' : '#ff0000';
 
       if (powerUpLevel === 1) {
-        // Tiro 煤nico reto
+        // Tiro único reto
         bullets.push({
           x: shipCenterX,
           y: shipCenterY,
@@ -1751,7 +1751,7 @@
           color: color
         });
       } else if (powerUpLevel === 3) {
-        // Tr锚s tiros em spread (leque)
+        // Três tiros em spread (leque)
         const angleSpread = Math.PI / 6; // 30 graus de spread total
         for (let i = -1; i <= 1; i++) {
           const angle = i * (angleSpread / 2);
@@ -1767,14 +1767,14 @@
       }
 
       playSound(shootSound);
-      vibrate(30 + powerUpLevel * 10); // Vibra莽茫o maior com n铆vel mais alto
+      vibrate(30 + powerUpLevel * 10); // Vibração maior com nível mais alto
     }
 
     // Game functions
     function startGame() {
       if (gameActive) return;
       gameActive = true;
-      // Remover completamente os bot玫es principais
+      // Remover completamente os botões principais
       buttonContainer.style.display = 'none';
       logo.style.opacity = '0';
       document.querySelector('#text1').style.display = 'none';
@@ -1909,11 +1909,11 @@
           const bdy = b.y - a.y;
           const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
           if (bdist < b.size + a.size) {
-            score += 20 * powerUpLevel; // Pontos extras baseado no n铆vel
+            score += 20 * powerUpLevel; // Pontos extras baseado no nível
             bullets.splice(i, 1);
-            createExplosion(a.x, a.y, 12); // Explos茫o marrom
+            createExplosion(a.x, a.y, 12); // Explosão marrom
             playSound(explosionSound);
-            vibrate(50); // Vibra莽茫o no acerto
+            vibrate(50); // Vibração no acerto
             asteroids.splice(j, 1);
             break;
           }
@@ -1935,13 +1935,13 @@
             shieldCount--;
             createParticle(a.x, a.y, true, 'rgba(0,255,0,0.5)');
             playSound(shieldSound);
-            vibrate(100); // Vibra莽茫o no bloqueio de escudo
+            vibrate(100); // Vibração no bloqueio de escudo
             asteroids.splice(i, 1);
           } else {
             lives--;
-            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explos茫o no impacto
+            createExplosion(shipX + shipWidth / 2, shipY + shipHeight / 2, 15); // Explosão no impacto
             playSound(hitSound);
-            vibrate(200); // Vibra莽茫o forte no impacto
+            vibrate(200); // Vibração forte no impacto
             asteroids.splice(i, 1);
             if (lives <= 0) {
               endGame();
@@ -1966,7 +1966,7 @@
           applyPowerUp(p.type);
           powerups.splice(i, 1);
           playSound(powerupSound);
-          vibrate(150); // Vibra莽茫o no power-up
+          vibrate(150); // Vibração no power-up
           for (let k = 0; k < 6; k++) {
             createParticle(p.x, p.y, false);
           }
@@ -2011,7 +2011,7 @@
       updateAsteroidFlames();
       drawAsteroidFlames();
 
-      // Draw asteroids com emoji 馃 e chamas
+      // Draw asteroids com emoji 🪨 e chamas
       ctx.shadowColor = 'rgba(139, 69, 19, 0.8)';
       ctx.shadowBlur = 10;
       ctx.font = 'bold 20px Arial, sans-serif';
@@ -2020,7 +2020,7 @@
       for (let a of asteroids) {
         ctx.font = `bold ${a.size * 1.2}px Arial, sans-serif`;
         ctx.fillStyle = '#8B4513';
-        ctx.fillText('馃', a.x, a.y);
+        ctx.fillText('🪨', a.x, a.y);
       }
       ctx.shadowBlur = 0;
       ctx.textAlign = 'left';
@@ -2039,7 +2039,7 @@
         ctx.shadowBlur = 0;
       });
 
-      // Draw powerups com 铆cones bonitos (emojis) e anima莽茫o radial
+      // Draw powerups com ícones bonitos (emojis) e animação radial
       for (let p of powerups) {
         const pulseSize = p.size + Math.sin(Date.now() / 200) * 2;
         ctx.shadowColor = p.type === 'speed' ? '#00ffff' : p.type === 'shield' ? '#00ff00' : '#8000ff';
@@ -2052,7 +2052,7 @@
         ctx.font = `${Math.min(16, canvas.width / 60)}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const icon = p.type === 'speed' ? '馃殌' : p.type === 'shield' ? '馃洝锔�' : '鉂わ笍';
+        const icon = p.type === 'speed' ? '🚀' : p.type === 'shield' ? '🛡️' : '❤️';
         ctx.fillText(icon, p.x, p.y);
       }
       ctx.textAlign = 'left';
@@ -2064,30 +2064,30 @@
       updateExplosionParticles();
       drawExplosionParticles();
 
-      // Part铆culas de exaust茫o como na intro (sempre ativas durante o jogo, igual 脿 anima莽茫o inicial)
+      // Partículas de exaustão como na intro (sempre ativas durante o jogo, igual à animação inicial)
       const exhaustX = shipX + shipWidth / 2;
       const exhaustY = shipY + shipHeight;
-      // Sempre criar part铆culas para simular thrust constante, mais vis铆vel
+      // Sempre criar partículas para simular thrust constante, mais visível
       for (let i = 0; i < 5; i++) { // Aumentado para 5 para mais visibilidade
         createParticle(exhaustX, exhaustY - 5);
       }
-      for (let i = 0; i < 1; i++) { // Diminu铆do para 1 para menos fuma莽a
+      for (let i = 0; i < 1; i++) { // Diminuído para 1 para menos fumaça
         createParticle(exhaustX, exhaustY - 5, true);
       }
 
-      // Atualizar part铆culas
+      // Atualizar partículas
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e vis铆veis
-        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para part铆culas maiores por mais tempo
+        p.alpha -= p.decay * 0.8; // Reduzido decay para trails mais longos e visíveis
+        p.size *= p.isSmoke ? 0.99 : 0.96; // Ajustado para partículas maiores por mais tempo
         p.vy += 0.1;
         p.rotation += p.isSmoke ? 0.05 : 0.1;
         if (p.alpha <= 0 || p.size <= 0.1 || p.y > canvas.height) particles.splice(i, 1);
       }
 
-      // Desenhar part铆culas
+      // Desenhar partículas
       particles.forEach(p => {
         ctx.save();
         ctx.translate(p.x, p.y);
@@ -2136,9 +2136,9 @@
       ctx.font = `bold ${Math.min(24, canvas.width / 30) * uiScale}px 'Poppins', sans-serif`;
       ctx.textAlign = 'left';
       ctx.fillText(`PONTOS: ${score}`, 20, 40);
-      ctx.fillText(`VIDAS: ${'鉂わ笍'.repeat(lives)}`, 20, 70);
+      ctx.fillText(`VIDAS: ${'❤️'.repeat(lives)}`, 20, 70);
       ctx.fillText(`PODERES: ${powerUpLevel}`, 20, 100);
-      ctx.fillText(`ESCUDOS: ${'馃洝锔�'.repeat(shieldCount)}`, 20, 130);
+      ctx.fillText(`ESCUDOS: ${'🛡️'.repeat(shieldCount)}`, 20, 130);
       ctx.shadowBlur = 0;
       ctx.textAlign = 'left';
 
@@ -2154,7 +2154,7 @@
         shieldEndTime = currentTime + 5000;
         shieldActive = true;
       } else if (type === 'life') {
-        lives = Math.min(5, lives + 1); // M谩ximo 5 vidas
+        lives = Math.min(5, lives + 1); // Máximo 5 vidas
       }
     }
 
@@ -2168,7 +2168,7 @@
       rafIdParticles = requestAnimationFrame(updateParticles);
       logo.style.opacity = '1';
       if (!forceResume) {
-        // Exibir score primeiro com anima莽茫o
+        // Exibir score primeiro com animação
         gameOverOverlay.style.display = 'flex';
         gameOverOverlay.style.opacity = '0';
         setTimeout(() => {
@@ -2185,13 +2185,13 @@
           }, 100);
         }, 300);
 
-        // Ap贸s exibir score, anima莽茫o para o Ranking TOP 5
+        // Após exibir score, animação para o Ranking TOP 5
         setTimeout(() => {
           fetchTop5(score);
         }, 2000);
       } else {
         gameOverOverlay.style.display = 'none';
-        buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo ap贸s game over
+        buttonContainer.style.display = 'flex'; // Mostrar apenas ao sair do jogo após game over
         buttonContainer.style.opacity = '1';
       }
     }
@@ -2200,7 +2200,7 @@
       gameOverOverlay.style.display = 'none';
       gameOverOverlay.classList.remove('show');
       document.getElementById('nameInput').style.display = 'none';
-      document.getElementById('nameInput').innerHTML = ''; // Limpa o conte煤do ao reiniciar
+      document.getElementById('nameInput').innerHTML = ''; // Limpa o conteúdo ao reiniciar
       document.getElementById('top5').classList.remove('animate-ranking');
       startGame();
     }
@@ -2276,7 +2276,7 @@
       }
     });
 
-    // Removido o event listener de double-click no logo, agora 茅 single-click direto via onclick no HTML
+    // Removido o event listener de double-click no logo, agora é single-click direto via onclick no HTML
 
     function triggerExitSequence() {
       logo.style.animation = 'zoomLogo 2s ease-in forwards';
